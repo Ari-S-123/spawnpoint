@@ -55,14 +55,14 @@ export function CreateAgentForm() {
   }
 
   return (
-    <Card>
+    <Card className="border-border/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5" />
+          <Sparkles className="h-5 w-5 text-amber-400" />
           Create New Agent
         </CardTitle>
         <CardDescription>
-          Enter a name for your AI agent. SpawnPoint will automatically create accounts across all six platforms.
+          Enter a name for your AI agent. SpawnPoint will automatically create accounts across all platforms.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -77,7 +77,11 @@ export function CreateAgentForm() {
             />
             {error && <p className="mt-1.5 text-sm text-destructive">{error}</p>}
           </div>
-          <Button type="submit" disabled={isLoading || name.length < 2}>
+          <Button
+            type="submit"
+            disabled={isLoading || name.length < 2}
+            className="bg-amber-500/90 text-zinc-950 hover:bg-amber-400"
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

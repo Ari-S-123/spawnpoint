@@ -1,46 +1,49 @@
-import { generateText, Output } from 'ai';
-import { anthropic } from '@ai-sdk/anthropic';
-import { z } from 'zod';
 import { db } from '@/db';
 import { setupTasks } from '@/db/schema';
 import { and, eq } from 'drizzle-orm';
 import { PLATFORM_CONFIGS } from '@/lib/platforms';
-import { createBrowserSession, performSignup, injectOTP, takeScreenshot } from '@/lib/browser';
+import { createStagehandSession, performSignup, injectOTP, closeSession, type StagehandSession } from '@/lib/browser';
 import { waitForVerification } from '@/lib/agentmail';
 import { getCredential } from '@/lib/vault';
 import { emitTaskUpdate } from '@/lib/events';
 import type { Platform } from '@/types';
 
-const model = anthropic('claude-opus-4-6');
-
-const NextActionSchema = z.object({
-  action: z.enum([
-    'fill_form',
-    'click_element',
-    'wait_for_email',
-    'inject_otp',
-    'navigate_link',
-    'take_screenshot',
-    'report_captcha',
-    'report_success',
-    'report_failure'
-  ]),
-  selector: z.string().optional(),
-  value: z.string().optional(),
-  reasoning: z.string()
-});
-
 export async function enqueueSignupTasks(agentId: string, email: string, inboxId: string): Promise<void> {
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`[ORCHESTRATOR] enqueueSignupTasks called`);
+  console.log(`[ORCHESTRATOR] agentId: ${agentId}`);
+  console.log(`[ORCHESTRATOR] email: ${email}`);
+  console.log(`[ORCHESTRATOR] inboxId: ${inboxId}`);
+  console.log(`${'='.repeat(60)}\n`);
+
   const orderedPlatforms: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'tiktok', 'twitter'];
 
   const nonCaptcha = orderedPlatforms.filter((p) => !PLATFORM_CONFIGS[p]?.captchaLikely);
   const captchaLikely = orderedPlatforms.filter((p) => PLATFORM_CONFIGS[p]?.captchaLikely);
 
-  await Promise.allSettled(nonCaptcha.map((platform) => executePlatformSignup(agentId, platform, email, inboxId)));
+  console.log(`[ORCHESTRATOR] Non-captcha platforms (sequential with delays): ${nonCaptcha.join(', ')}`);
+  console.log(`[ORCHESTRATOR] Captcha-likely platforms (sequential): ${captchaLikely.join(', ')}`);
+
+  // Run non-captcha platforms sequentially with delays to avoid rate limits
+  for (let i = 0; i < nonCaptcha.length; i++) {
+    const platform = nonCaptcha[i]!;
+    console.log(`\n[ORCHESTRATOR] Starting signup for ${platform} (${i + 1}/${nonCaptcha.length})...`);
+    await executePlatformSignup(agentId, platform, email, inboxId);
+
+    // Add delay between signups to avoid rate limits (skip delay after last one)
+    if (i < nonCaptcha.length - 1) {
+      console.log(`[ORCHESTRATOR] Waiting 5 seconds before next signup to avoid rate limits...`);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+  }
+
+  console.log(`\n[ORCHESTRATOR] Non-captcha signups complete. Starting captcha platforms...\n`);
 
   for (const platform of captchaLikely) {
     await executePlatformSignup(agentId, platform, email, inboxId);
   }
+
+  console.log(`\n[ORCHESTRATOR] All signup tasks complete.\n`);
 }
 
 async function executePlatformSignup(
@@ -49,9 +52,12 @@ async function executePlatformSignup(
   email: string,
   inboxId: string
 ): Promise<void> {
+  const startTime = new Date().toISOString();
+  console.log(`[${startTime}] [${platform.toUpperCase()}] Starting signup attempt...`);
+
   const config = PLATFORM_CONFIGS[platform];
   if (!config) {
-    console.error(`No config for platform: ${platform}`);
+    console.error(`[${platform}] No config for platform: ${platform}`);
     return;
   }
 
@@ -78,10 +84,9 @@ async function executePlatformSignup(
     return;
   }
 
-  let browser;
+  let session: StagehandSession | null = null;
   try {
-    const session = await createBrowserSession();
-    browser = session.browser;
+    session = await createStagehandSession();
 
     // Store session ID for live view
     await db
@@ -99,8 +104,8 @@ async function executePlatformSignup(
       timestamp: new Date().toISOString()
     });
 
-    // Attempt deterministic signup
-    const signupResult = await performSignup(session.page, config, email, credential.password);
+    // Attempt Stagehand-driven signup
+    const signupResult = await performSignup(session.stagehand, session.page, config, email, credential.password);
 
     if (signupResult === 'captcha') {
       await db
@@ -139,9 +144,9 @@ async function executePlatformSignup(
     const verification = await waitForVerification(inboxId, platform);
 
     if (verification.type === 'otp') {
-      await injectOTP(session.page, verification.value);
+      await injectOTP(session.stagehand, verification.value, config.instructions.fillOtp);
     } else if (verification.type === 'link') {
-      await session.page.goto(verification.value, { timeout: 15_000 });
+      await session.page.goto(verification.value, { timeoutMs: 15_000 });
     }
 
     await session.page.waitForTimeout(3000);
@@ -165,70 +170,77 @@ async function executePlatformSignup(
     console.error(`[${platform}] Signup failed:`, errorMsg);
 
     try {
-      await aiGuidedRecovery(agentId, platform, errorMsg);
+      await aiGuidedRecovery(agentId, platform, errorMsg, session);
     } catch {
       await markFailed(agentId, platform, errorMsg);
     }
   } finally {
-    if (browser) {
-      await browser.close().catch(() => {});
+    if (session) {
+      await closeSession(session.stagehand).catch(() => {});
     }
   }
 }
 
-async function aiGuidedRecovery(agentId: string, platform: Platform, errorContext: string): Promise<void> {
-  const session = await createBrowserSession();
+async function aiGuidedRecovery(
+  agentId: string,
+  platform: Platform,
+  errorContext: string,
+  existingSession: StagehandSession | null
+): Promise<void> {
+  // Reuse the existing session if available, otherwise create a new one
+  const session = existingSession ?? (await createStagehandSession());
 
   try {
-    const screenshot = await takeScreenshot(session.page);
-
-    const { output } = await generateText({
-      model,
-      providerOptions: {
-        anthropic: {
-          thinking: {
-            type: 'enabled',
-            budgetTokens: 8000
-          }
-        }
-      },
-      output: Output.object({ schema: NextActionSchema }),
-      messages: [
-        {
-          role: 'system',
-          content: `You are an expert web automation agent. You are helping to sign up for ${platform}.
-The previous automated attempt failed with error: "${errorContext}".
-Analyze the current page screenshot and determine the next best action to recover the signup flow.
-Be specific about CSS selectors and values.`
-        },
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: 'Here is the current state of the browser. What should I do next?'
-            },
-            {
-              type: 'image',
-              image: `data:image/png;base64,${screenshot}`
-            }
-          ]
-        }
-      ]
+    emitTaskUpdate({
+      taskId: '',
+      agentId,
+      platform,
+      status: 'in_progress',
+      message: `AI recovery agent starting for ${platform}...`,
+      timestamp: new Date().toISOString()
     });
 
-    if (output) {
+    const agent = session.stagehand.agent({
+      model: 'anthropic/claude-opus-4-5-20251101',
+      systemPrompt: `You are recovering from a signup failure on ${platform}. The previous automated attempt failed with error: "${errorContext}". Analyze the current page state, identify any error messages or issues, fix any form fields if needed, and attempt to complete the signup process. Do NOT enter any credentials — focus on navigating past errors and completing the flow.`
+    });
+
+    const result = await agent.execute({
+      instruction: `Look at the current page for ${platform}. Identify what went wrong and try to recover the signup flow. If you see error messages, try to resolve them. If the form needs to be resubmitted, do so.`,
+      maxSteps: 10
+    });
+
+    emitTaskUpdate({
+      taskId: '',
+      agentId,
+      platform,
+      status: 'in_progress',
+      message: `AI Recovery: ${result.message}`,
+      timestamp: new Date().toISOString()
+    });
+
+    if (result.success) {
+      await db
+        .update(setupTasks)
+        .set({ status: 'completed', updatedAt: new Date() })
+        .where(and(eq(setupTasks.agentId, agentId), eq(setupTasks.platform, platform)));
+
       emitTaskUpdate({
         taskId: '',
         agentId,
         platform,
-        status: 'in_progress',
-        message: `AI Recovery: ${output.reasoning}`,
+        status: 'completed',
+        message: `${platform} signup recovered successfully via AI agent!`,
         timestamp: new Date().toISOString()
       });
+    } else {
+      await markFailed(agentId, platform, `AI recovery failed: ${result.message}`);
     }
   } finally {
-    await session.browser.close().catch(() => {});
+    // Only close if we created a new session for recovery
+    if (!existingSession) {
+      await closeSession(session.stagehand).catch(() => {});
+    }
   }
 }
 

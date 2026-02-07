@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  serverExternalPackages: ['playwright-core', '@browserbasehq/sdk'],
+  serverExternalPackages: ['playwright-core', '@browserbasehq/sdk', '@browserbasehq/stagehand'],
   experimental: {
     optimizePackageImports: ['lucide-react', '@neondatabase/auth']
   }

@@ -1,96 +1,91 @@
-import { chromium, type Page, type Browser } from 'playwright-core';
-import Browserbase from '@browserbasehq/sdk';
+import { Stagehand, type Page } from '@browserbasehq/stagehand';
+import type { PlatformConfig } from '@/types';
 
-const bb = new Browserbase({
-  apiKey: process.env.BROWSERBASE_API_KEY!
-});
-
-export async function createBrowserSession(): Promise<{
-  browser: Browser;
+export type StagehandSession = {
+  stagehand: Stagehand;
   page: Page;
   sessionId: string;
-}> {
-  const session = await bb.sessions.create({
-    projectId: process.env.BROWSERBASE_PROJECT_ID!
+};
+
+export async function createStagehandSession(): Promise<StagehandSession> {
+  const stagehand = new Stagehand({
+    env: 'BROWSERBASE',
+    apiKey: process.env.BROWSERBASE_API_KEY!,
+    projectId: process.env.BROWSERBASE_PROJECT_ID!,
+    model: 'anthropic/claude-opus-4-5-20251101',
+    verbose: 0
   });
 
-  const browser = await chromium.connectOverCDP(session.connectUrl);
-  const defaultContext = browser.contexts()[0];
+  await stagehand.init();
 
-  if (!defaultContext) {
-    throw new Error('Browserbase session has no default context.');
-  }
-
-  const page = defaultContext.pages()[0];
-
+  const page = stagehand.context.pages()[0];
   if (!page) {
-    throw new Error('Browserbase session has no default page.');
+    throw new Error('Stagehand session has no default page.');
   }
 
   return {
-    browser,
+    stagehand,
     page,
-    sessionId: session.id
+    sessionId: stagehand.browserbaseSessionID ?? ''
   };
 }
 
 export async function performSignup(
+  stagehand: Stagehand,
   page: Page,
-  config: {
-    signupUrl: string;
-    selectors: {
-      emailInput: string;
-      passwordInput: string;
-      submitButton: string;
-    };
-  },
+  config: PlatformConfig,
   email: string,
   password: string
 ): Promise<'completed' | 'captcha'> {
   await page.goto(config.signupUrl, {
-    timeout: 30_000,
+    timeoutMs: 30_000,
     waitUntil: 'domcontentloaded'
   });
 
-  const captchaFrame = await page.$(
-    'iframe[src*="captcha"], iframe[src*="recaptcha"], [class*="captcha"], [id*="captcha"]'
+  // Check for CAPTCHA before filling
+  const captchaElements = await stagehand.observe(
+    'find any CAPTCHA challenges, reCAPTCHA widgets, or "I am not a robot" checkboxes'
   );
-  if (captchaFrame) {
+  if (captchaElements.length > 0) {
     return 'captcha';
   }
 
-  await page.waitForSelector(config.selectors.emailInput, { timeout: 10_000 });
-  await page.fill(config.selectors.emailInput, email);
-  await page.fill(config.selectors.passwordInput, password);
-  await page.click(config.selectors.submitButton);
+  await stagehand.act(config.instructions.fillEmail, {
+    variables: { email }
+  });
+
+  await stagehand.act(config.instructions.fillPassword, {
+    variables: { password }
+  });
+
+  await stagehand.act(config.instructions.submit);
 
   await page.waitForTimeout(3000);
 
-  const postSubmitCaptcha = await page.$('iframe[src*="captcha"], iframe[src*="recaptcha"], [class*="captcha"]');
-  if (postSubmitCaptcha) {
+  // Check for CAPTCHA after submit
+  const postSubmitCaptcha = await stagehand.observe(
+    'find any CAPTCHA challenges, reCAPTCHA widgets, or "I am not a robot" checkboxes'
+  );
+  if (postSubmitCaptcha.length > 0) {
     return 'captcha';
   }
 
   return 'completed';
 }
 
-export async function injectOTP(
-  page: Page,
-  otp: string,
-  selector = 'input[name="code"], input[name="confirmationCode"], input[name="otp"], input[type="tel"]'
-): Promise<void> {
-  await page.waitForSelector(selector, { timeout: 10_000 });
-  await page.fill(selector, otp);
+export async function injectOTP(stagehand: Stagehand, otp: string, instruction?: string): Promise<void> {
+  await stagehand.act(instruction ?? 'type %otp% into the verification code field', {
+    variables: { otp }
+  });
 
-  const verifyButton = await page.$(
-    'button:has-text("Verify"), button:has-text("Confirm"), button:has-text("Submit"), button[type="submit"]'
-  );
-  if (verifyButton) {
-    await verifyButton.click();
-  }
+  await stagehand.act('click the verify or confirm or submit button');
 }
 
 export async function takeScreenshot(page: Page): Promise<string> {
   const buffer = await page.screenshot({ type: 'png', fullPage: false });
   return buffer.toString('base64');
+}
+
+export async function closeSession(stagehand: Stagehand): Promise<void> {
+  await stagehand.close();
 }

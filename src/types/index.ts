@@ -28,12 +28,11 @@ export type PlatformConfig = {
   platform: Platform;
   signupUrl: string;
   captchaLikely: boolean;
-  selectors: {
-    emailInput: string;
-    passwordInput: string;
-    submitButton: string;
-    otpInput?: string;
-    dashboardUrl?: string;
+  instructions: {
+    fillEmail: string;
+    fillPassword: string;
+    submit: string;
+    fillOtp?: string;
   };
 };
 

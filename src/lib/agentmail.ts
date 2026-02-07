@@ -3,6 +3,16 @@ import { AgentMailClient } from 'agentmail';
 const client = new AgentMailClient({ apiKey: process.env.AGENTMAIL_API_KEY! });
 
 export async function createAgentEmail(agentName: string): Promise<{ inbox_id: string; username: string }> {
+  // Reuse an existing inbox if one already exists
+  const existing = await client.inboxes.list();
+  const firstInbox = existing.inboxes?.[0];
+  if (firstInbox) {
+    return {
+      inbox_id: firstInbox.inboxId,
+      username: firstInbox.displayName ?? agentName
+    };
+  }
+
   const inbox = await client.inboxes.create({
     username: agentName,
     domain: 'agentmail.to'

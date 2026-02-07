@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, Mail, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +22,7 @@ export function InboxViewer({ inboxId }: { inboxId: string }) {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  async function fetchMessages() {
+  const fetchMessages = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/inbox/${inboxId}`);
@@ -35,12 +35,11 @@ export function InboxViewer({ inboxId }: { inboxId: string }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [inboxId]);
 
   useEffect(() => {
     fetchMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inboxId]);
+  }, [fetchMessages]);
 
   if (loading) {
     return (

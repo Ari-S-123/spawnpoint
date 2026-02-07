@@ -1,7 +1,7 @@
 import { db } from '@/db';
 import { agents } from '@/db/schema';
 import { auth } from '@/lib/auth/server';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { CreateAgentForm } from '@/components/agents/create-agent-form';
@@ -13,11 +13,15 @@ export default async function DashboardPage() {
     redirect('/auth/sign-in');
   }
 
-  const agentList = await db
-    .select()
-    .from(agents)
-    .where(eq(agents.operatorId, session.user.id))
-    .orderBy(desc(agents.createdAt));
+  const [agentList, countResult] = await Promise.all([
+    db
+      .select()
+      .from(agents)
+      .where(eq(agents.operatorId, session.user.id))
+      .orderBy(desc(agents.createdAt)),
+    db.select({ value: count() }).from(agents)
+  ]);
+  const agentCount = countResult[0]?.value ?? 0;
 
   const serialized = agentList.map((a) => ({
     ...a,
@@ -29,7 +33,7 @@ export default async function DashboardPage() {
     <>
       <Header title="Dashboard" />
       <div className="flex flex-col gap-8 p-6">
-        <CreateAgentForm />
+        <CreateAgentForm agentCount={agentCount} />
         <div>
           <div className="mb-4">
             <p className="mb-2 text-xs font-medium tracking-[0.3em] text-amber-400/60 uppercase">Agent Registry</p>

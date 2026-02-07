@@ -30,6 +30,7 @@
       "Bash(bun run format:*)",
       "Bash(bun run lint)",
       "Bash(bun scripts/test-agentmail.ts:*)",
+      "Bash(grep:*)",
       "mcp__chrome-devtools__list_pages",
       "mcp__chrome-devtools__navigate_page",
       "mcp__chrome-devtools__take_screenshot",

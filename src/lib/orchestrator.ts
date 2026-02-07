@@ -11,7 +11,7 @@ import { getCredential } from '@/lib/vault';
 import { emitTaskUpdate } from '@/lib/events';
 import type { Platform } from '@/types';
 
-const model = anthropic('claude-opus-4-6-20250414');
+const model = anthropic('claude-opus-4-6');
 
 const NextActionSchema = z.object({
   action: z.enum([

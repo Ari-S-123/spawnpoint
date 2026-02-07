@@ -20,7 +20,7 @@ try {
     console.log('No existing inboxes — creating a test inbox...');
     const inbox = await client.inboxes.create({
       username: 'test-agent',
-      domain: 'agentmail.to',
+      domain: 'agentmail.to'
     });
     console.log('Created inbox:');
     console.log(`  Inbox ID: ${inbox.inboxId}`);

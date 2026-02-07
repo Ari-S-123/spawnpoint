@@ -9,7 +9,7 @@ export async function createAgentEmail(agentName: string): Promise<{ inbox_id: s
   if (firstInbox) {
     return {
       inbox_id: firstInbox.inboxId,
-      username: firstInbox.displayName ?? agentName
+      username: firstInbox.inboxId
     };
   }
 
@@ -20,7 +20,7 @@ export async function createAgentEmail(agentName: string): Promise<{ inbox_id: s
 
   return {
     inbox_id: inbox.inboxId,
-    username: inbox.displayName ?? agentName
+    username: inbox.inboxId
   };
 }
 

@@ -124,4 +124,37 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button:enabled,
+  input[type='button']:enabled,
+  input[type='submit']:enabled,
+  input[type='reset']:enabled {
+    @apply cursor-pointer;
+  }
+
+  button:disabled,
+  input[type='button']:disabled,
+  input[type='submit']:disabled,
+  input[type='reset']:disabled,
+  [aria-disabled='true'] {
+    @apply cursor-not-allowed;
+  }
+
+  [role='button']:not([aria-disabled='true']) {
+    @apply cursor-pointer;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }

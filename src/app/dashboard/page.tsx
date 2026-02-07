@@ -1,7 +1,7 @@
 import { db } from '@/db';
 import { agents, setupTasks } from '@/db/schema';
 import { auth } from '@/lib/auth/server';
-import { eq, desc, count } from 'drizzle-orm';
+import { eq, desc, count, inArray } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { CreateAgentForm } from '@/components/agents/create-agent-form';
@@ -54,7 +54,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <Header title="Dashboard" />
+      <Header breadcrumbs={[{ label: 'Agents' }]} />
       <div className="flex flex-col gap-6 p-6">
         <CreateAgentForm agentCount={agentCount} />
         <div>

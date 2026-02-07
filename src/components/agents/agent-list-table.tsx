@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
-import { ExternalLink, Loader2, Trash2 } from 'lucide-react';
+import { Bot, ExternalLink, Loader2, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,11 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
+type AgentTask = {
+  platform: string;
+  status: string;
+};
+
 type Agent = {
   id: string;
   name: string;
@@ -26,28 +31,6 @@ type Agent = {
   tasks: AgentTask[];
 };
 
-const PLATFORM_LABELS: Record<string, string> = {
-  vercel: 'Vercel',
-  sentry: 'Sentry',
-  mintlify: 'Mintlify',
-  instagram: 'Instagram',
-  twitter: 'X'
-};
-
-function getStatusColor(status: string) {
-  switch (status) {
-    case 'completed':
-      return 'bg-emerald-400';
-    case 'in_progress':
-    case 'awaiting_verification':
-      return 'bg-amber-400';
-    case 'failed':
-    case 'needs_human':
-      return 'bg-red-400';
-    default:
-      return 'bg-zinc-600';
-  }
-}
 
 export function AgentListTable({ agents }: { agents: Agent[] }) {
   const router = useRouter();

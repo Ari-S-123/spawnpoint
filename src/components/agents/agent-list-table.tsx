@@ -31,7 +31,6 @@ type Agent = {
   tasks: AgentTask[];
 };
 
-
 export function AgentListTable({ agents }: { agents: Agent[] }) {
   const router = useRouter();
   const [deleteTarget, setDeleteTarget] = useState<Agent | null>(null);

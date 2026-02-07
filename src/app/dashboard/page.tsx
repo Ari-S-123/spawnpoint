@@ -14,11 +14,7 @@ export default async function DashboardPage() {
   }
 
   const [agentList, countResult] = await Promise.all([
-    db
-      .select()
-      .from(agents)
-      .where(eq(agents.operatorId, session.user.id))
-      .orderBy(desc(agents.createdAt)),
+    db.select().from(agents).where(eq(agents.operatorId, session.user.id)).orderBy(desc(agents.createdAt)),
     db.select({ value: count() }).from(agents)
   ]);
   const agentCount = countResult[0]?.value ?? 0;

@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { db } from '@/db';
 import { agents, setupTasks } from '@/db/schema';
-import { auth } from '@/lib/auth/server';
+import { getCachedSession } from '@/lib/auth/session';
 import { and, eq } from 'drizzle-orm';
 import { formatDistanceToNow } from 'date-fns';
 import { Header } from '@/components/layout/header';
@@ -15,24 +15,27 @@ import { Bot, Shield, Activity } from 'lucide-react';
 const tabTriggerClass = 'data-[state=active]:text-amber-300';
 
 export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { data: session } = await auth.getSession();
+  const { data: session } = await getCachedSession();
   if (!session?.user) {
     redirect('/auth/sign-in');
   }
 
   const { id } = await params;
 
-  const [agent] = await db
-    .select()
-    .from(agents)
-    .where(and(eq(agents.id, id), eq(agents.operatorId, session.user.id)))
-    .limit(1);
+  const [agentResult, tasks] = await Promise.all([
+    db
+      .select()
+      .from(agents)
+      .where(and(eq(agents.id, id), eq(agents.operatorId, session.user.id)))
+      .limit(1),
+    db.select().from(setupTasks).where(eq(setupTasks.agentId, id))
+  ]);
+
+  const [agent] = agentResult;
 
   if (!agent) {
     notFound();
   }
-
-  const tasks = await db.select().from(setupTasks).where(eq(setupTasks.agentId, id));
 
   const serializedTasks = tasks.map((t) => ({
     id: t.id,

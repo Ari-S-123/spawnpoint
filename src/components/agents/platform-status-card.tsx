@@ -96,7 +96,7 @@ export function PlatformStatusCard({ platform, status, message, browserSessionId
         </div>
       </CardHeader>
       <CardContent>
-        {message && <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{message}</p>}
+        {message ? <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{message}</p> : null}
         {status === 'needs_human' && browserSessionId && (
           <Button
             variant="outline"

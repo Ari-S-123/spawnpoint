@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Sparkles } from 'lucide-react';
 
 const MAX_AGENTS = 3;
+const AGENT_NAME_PATTERN = /^[a-zA-Z0-9-]+$/;
 
 export function CreateAgentForm({ agentCount }: { agentCount: number }) {
   const atLimit = agentCount >= MAX_AGENTS;
@@ -27,7 +28,7 @@ export function CreateAgentForm({ agentCount }: { agentCount: number }) {
       return;
     }
 
-    if (!/^[a-zA-Z0-9-]+$/.test(name)) {
+    if (!AGENT_NAME_PATTERN.test(name)) {
       setError('Only alphanumeric characters and hyphens allowed.');
       return;
     }
@@ -86,7 +87,7 @@ export function CreateAgentForm({ agentCount }: { agentCount: number }) {
               disabled={isLoading || atLimit}
               className="h-10 border-zinc-700/50 bg-zinc-900/50 focus-visible:border-amber-500/50 focus-visible:ring-amber-500/20"
             />
-            {error && <p className="mt-1.5 text-sm text-destructive">{error}</p>}
+            {error ? <p className="mt-1.5 text-sm text-destructive">{error}</p> : null}
           </div>
           <Button
             type="submit"

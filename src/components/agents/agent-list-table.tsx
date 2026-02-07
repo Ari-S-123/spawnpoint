@@ -18,17 +18,11 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
-type AgentTask = {
-  platform: string;
-  status: string;
-};
-
 type Agent = {
   id: string;
   name: string;
   email: string;
   createdAt: string;
-  tasks: AgentTask[];
 };
 
 export function AgentListTable({ agents }: { agents: Agent[] }) {

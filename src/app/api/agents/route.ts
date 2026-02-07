@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { db } from '@/db';
 import { agents, setupTasks } from '@/db/schema';
 import { CreateAgentSchema, PLATFORMS } from '@/types';
@@ -73,8 +73,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       })
     );
 
-    // Enqueue signup orchestration (non-blocking)
-    enqueueSignupTasks(agent.id, email, inbox.inbox_id).catch(console.error);
+    // Enqueue signup orchestration (non-blocking, runs after response)
+    after(() => {
+      enqueueSignupTasks(agent.id, email, inbox.inbox_id).catch(console.error);
+    });
 
     return NextResponse.json({ agent, tasks: taskRecords }, { status: 201 });
   } catch (error) {

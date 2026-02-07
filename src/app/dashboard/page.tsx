@@ -1,7 +1,7 @@
 import { db } from '@/db';
 import { agents, setupTasks } from '@/db/schema';
 import { auth } from '@/lib/auth/server';
-import { eq, desc, inArray } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { CreateAgentForm } from '@/components/agents/create-agent-form';
@@ -13,11 +13,15 @@ export default async function DashboardPage() {
     redirect('/auth/sign-in');
   }
 
-  const agentList = await db
-    .select()
-    .from(agents)
-    .where(eq(agents.operatorId, session.user.id))
-    .orderBy(desc(agents.createdAt));
+  const [agentList, countResult] = await Promise.all([
+    db
+      .select()
+      .from(agents)
+      .where(eq(agents.operatorId, session.user.id))
+      .orderBy(desc(agents.createdAt)),
+    db.select({ value: count() }).from(agents)
+  ]);
+  const agentCount = countResult[0]?.value ?? 0;
 
   const agentIds = agentList.map((a) => a.id);
 
@@ -50,10 +54,9 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <Header breadcrumbs={[{ label: 'Agents' }]} />
-      <div className="flex flex-col gap-8 p-6">
-        <CreateAgentForm />
-
+      <Header title="Dashboard" />
+      <div className="flex flex-col gap-6 p-6">
+        <CreateAgentForm agentCount={agentCount} />
         <div>
           <div className="mb-4 flex items-center justify-between">
             <div>

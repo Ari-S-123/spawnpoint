@@ -6,7 +6,7 @@ import { createAgentEmail } from '@/lib/agentmail';
 import { generatePassword, storeCredential } from '@/lib/vault';
 import { enqueueSignupTasks } from '@/lib/orchestrator';
 import { auth } from '@/lib/auth/server';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const { data: session } = await auth.getSession();
@@ -18,6 +18,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const parsed = CreateAgentSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten() }, { status: 400 });
+  }
+
+  const result = await db.select({ value: count() }).from(agents);
+  const agentCount = result[0]?.value ?? 0;
+  if (agentCount >= 3) {
+    return NextResponse.json(
+      { error: 'Maximum of 3 agents allowed. Delete an existing agent to create a new one.' },
+      { status: 400 }
+    );
   }
 
   const { name } = parsed.data;

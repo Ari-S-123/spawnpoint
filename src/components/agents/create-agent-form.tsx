@@ -6,9 +6,13 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Loader2, Sparkles } from 'lucide-react';
 
-export function CreateAgentForm() {
+const MAX_AGENTS = 3;
+
+export function CreateAgentForm({ agentCount }: { agentCount: number }) {
+  const atLimit = agentCount >= MAX_AGENTS;
   const router = useRouter();
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -57,12 +61,19 @@ export function CreateAgentForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5" />
-          Create New Agent
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5" />
+            Create New Agent
+          </CardTitle>
+          <Badge variant={atLimit ? 'destructive' : 'secondary'} className="text-xs">
+            {agentCount}/{MAX_AGENTS} agents
+          </Badge>
+        </div>
         <CardDescription>
-          Enter a name for your AI agent. SpawnPoint will automatically create accounts across all six platforms.
+          {atLimit
+            ? 'Agent limit reached. Delete an existing agent to create a new one.'
+            : 'Enter a name for your AI agent. SpawnPoint will automatically create accounts across all six platforms.'}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -72,12 +83,12 @@ export function CreateAgentForm() {
               placeholder="e.g. cool-agent-007"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={isLoading}
+              disabled={isLoading || atLimit}
               className="h-10"
             />
             {error && <p className="mt-1.5 text-sm text-destructive">{error}</p>}
           </div>
-          <Button type="submit" disabled={isLoading || name.length < 2}>
+          <Button type="submit" disabled={isLoading || atLimit || name.length < 2}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

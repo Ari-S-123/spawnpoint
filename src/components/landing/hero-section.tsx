@@ -35,7 +35,7 @@ export function HeroSection() {
           One Click.
           <br />
           <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 bg-clip-text text-transparent">
-            Six Platforms.
+            Five Platforms.
           </span>
           <br />
           Zero Friction.
@@ -43,8 +43,8 @@ export function HeroSection() {
 
         {/* Subheadline */}
         <p className="mx-auto mb-10 max-w-lg text-lg leading-relaxed text-zinc-400">
-          SpawnPoint automates account creation across Instagram, TikTok, X, Mintlify, Vercel, and Sentry for your AI
-          agents. What takes 30 minutes by hand takes 2 minutes with us.
+          SpawnPoint automates account creation across Instagram, X, Mintlify, Vercel, and Sentry for your AI agents.
+          What takes 30 minutes by hand takes 2 minutes with us.
         </p>
 
         {/* CTA */}

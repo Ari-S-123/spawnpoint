@@ -44,16 +44,17 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       otpInput: 'input[name="confirmationCode"]'
     }
   },
-  tiktok: {
-    platform: 'tiktok',
-    signupUrl: 'https://www.tiktok.com/signup',
-    captchaLikely: true,
-    selectors: {
-      emailInput: 'input[name="email"]',
-      passwordInput: 'input[name="password"]',
-      submitButton: 'button[type="submit"]'
-    }
-  },
+  // TikTok disabled
+  // tiktok: {
+  //   platform: 'tiktok',
+  //   signupUrl: 'https://www.tiktok.com/signup',
+  //   captchaLikely: true,
+  //   selectors: {
+  //     emailInput: 'input[name="email"]',
+  //     passwordInput: 'input[name="password"]',
+  //     submitButton: 'button[type="submit"]'
+  //   }
+  // },
   twitter: {
     platform: 'twitter',
     signupUrl: 'https://x.com/i/flow/signup',

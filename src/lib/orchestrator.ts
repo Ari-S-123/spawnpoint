@@ -31,7 +31,7 @@ const NextActionSchema = z.object({
 });
 
 export async function enqueueSignupTasks(agentId: string, email: string, inboxId: string): Promise<void> {
-  const orderedPlatforms: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'tiktok', 'twitter'];
+  const orderedPlatforms: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', /* 'tiktok', */ 'twitter'];
 
   const nonCaptcha = orderedPlatforms.filter((p) => !PLATFORM_CONFIGS[p]?.captchaLikely);
   const captchaLikely = orderedPlatforms.filter((p) => PLATFORM_CONFIGS[p]?.captchaLikely);

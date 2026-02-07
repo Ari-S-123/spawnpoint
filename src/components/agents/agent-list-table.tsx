@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
-import { ExternalLink, Loader2, Trash2 } from 'lucide-react';
+import { Bot, ExternalLink, Loader2, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,11 +18,17 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
+type AgentTask = {
+  platform: string;
+  status: string;
+};
+
 type Agent = {
   id: string;
   name: string;
   email: string;
   createdAt: string;
+  tasks: AgentTask[];
 };
 
 export function AgentListTable({ agents }: { agents: Agent[] }) {
@@ -53,9 +59,14 @@ export function AgentListTable({ agents }: { agents: Agent[] }) {
 
   if (agents.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-        <p className="text-lg font-medium text-muted-foreground">No agents yet</p>
-        <p className="mt-1 text-sm text-muted-foreground">Create your first agent to get started.</p>
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/50 p-16 text-center">
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-amber-500/15 bg-amber-500/10 text-amber-400">
+          <Bot className="h-7 w-7" />
+        </div>
+        <p className="text-lg font-medium">No agents yet</p>
+        <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">
+          Create your first agent to automatically provision accounts across all platforms.
+        </p>
       </div>
     );
   }

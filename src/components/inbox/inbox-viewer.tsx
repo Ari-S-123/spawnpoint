@@ -53,10 +53,18 @@ export function InboxViewer({ inboxId }: { inboxId: string }) {
 
   if (messages.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-        <Mail className="mb-3 h-8 w-8 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">No messages yet. Verification emails will appear here.</p>
-        <Button variant="outline" size="sm" className="mt-4" onClick={fetchMessages}>
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-zinc-800/50 p-12 text-center">
+        <Mail className="mb-3 h-8 w-8 text-amber-400/60" />
+        <p className="text-sm text-zinc-300" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+          No messages yet
+        </p>
+        <p className="mt-1 text-xs text-zinc-500">Verification emails will appear here.</p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-4 border-zinc-700/50 hover:border-amber-500/30 hover:text-amber-200"
+          onClick={fetchMessages}
+        >
           <RefreshCw className="mr-1 h-3 w-3" />
           Refresh
         </Button>
@@ -67,8 +75,15 @@ export function InboxViewer({ inboxId }: { inboxId: string }) {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <Badge variant="secondary">{messages.length} messages</Badge>
-        <Button variant="outline" size="sm" onClick={fetchMessages}>
+        <Badge variant="secondary" className="border border-zinc-700/50 text-zinc-300">
+          {messages.length} messages
+        </Badge>
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-zinc-700/50 hover:border-amber-500/30 hover:text-amber-200"
+          onClick={fetchMessages}
+        >
           <RefreshCw className="mr-1 h-3 w-3" />
           Refresh
         </Button>
@@ -79,7 +94,7 @@ export function InboxViewer({ inboxId }: { inboxId: string }) {
           {messages.map((msg) => (
             <Card
               key={msg.message_id}
-              className="cursor-pointer transition-colors hover:bg-muted/50"
+              className="cursor-pointer border-zinc-800/50 transition-all duration-300 hover:border-zinc-700/50 hover:bg-amber-500/5"
               onClick={() => setExpandedId(expandedId === msg.message_id ? null : msg.message_id)}
             >
               <CardHeader className="p-4 pb-2">

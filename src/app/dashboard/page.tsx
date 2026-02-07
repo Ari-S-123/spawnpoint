@@ -28,10 +28,18 @@ export default async function DashboardPage() {
   return (
     <>
       <Header title="Dashboard" />
-      <div className="flex flex-col gap-6 p-6">
+      <div className="flex flex-col gap-8 p-6">
         <CreateAgentForm />
         <div>
-          <h2 className="mb-4 text-lg font-semibold">Your Agents</h2>
+          <div className="mb-4">
+            <p className="mb-2 text-xs font-medium tracking-[0.3em] text-amber-400/60 uppercase">Agent Registry</p>
+            <h2
+              className="text-xl font-light text-zinc-200"
+              style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+            >
+              Your Agents
+            </h2>
+          </div>
           <AgentListTable agents={serialized} />
         </div>
       </div>

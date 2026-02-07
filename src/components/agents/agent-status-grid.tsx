@@ -4,6 +4,7 @@ import { useTaskStream } from '@/hooks/use-task-stream';
 import { PlatformStatusCard } from '@/components/agents/platform-status-card';
 import { Badge } from '@/components/ui/badge';
 import { Wifi, WifiOff } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { Platform } from '@/types';
 
 type Task = {
@@ -41,7 +42,10 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
   return (
     <div>
       <div className="mb-4 flex items-center gap-2">
-        <Badge variant={isConnected ? 'default' : 'secondary'} className="gap-1">
+        <Badge
+          variant={isConnected ? 'default' : 'secondary'}
+          className={cn('gap-1', isConnected && 'border border-amber-500/25 bg-amber-500/15 text-amber-300')}
+        >
           {isConnected ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
           {isConnected ? 'Live' : 'Connecting...'}
         </Badge>

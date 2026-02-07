@@ -11,6 +11,8 @@ import { CredentialsTable } from '@/components/vault/credentials-table';
 import { InboxViewer } from '@/components/inbox/inbox-viewer';
 import { TaskActivityLog } from '@/components/agents/task-activity-log';
 
+const tabTriggerClass = 'data-[state=active]:text-amber-300';
+
 export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = await auth.getSession();
   if (!session?.user) {
@@ -46,21 +48,34 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
       <Header title={`Agent: ${agent.name}`} />
       <div className="p-6">
         <div className="mb-6 flex items-center gap-3">
-          <h1 className="text-2xl font-bold">{agent.name}</h1>
-          <Badge variant="outline" className="font-mono text-xs">
+          <h1
+            className="text-2xl font-light text-zinc-100"
+            style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+          >
+            {agent.name}
+          </h1>
+          <Badge variant="outline" className="border-zinc-700/50 font-mono text-xs text-zinc-400">
             {agent.email}
           </Badge>
-          <Badge variant="secondary">
+          <Badge variant="secondary" className="border border-amber-500/20 bg-amber-500/10 text-amber-300">
             {completedCount}/{tasks.length} complete
           </Badge>
         </div>
 
         <Tabs defaultValue="status">
           <TabsList>
-            <TabsTrigger value="status">Status</TabsTrigger>
-            <TabsTrigger value="inbox">Inbox</TabsTrigger>
-            <TabsTrigger value="vault">Credentials</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsTrigger value="status" className={tabTriggerClass}>
+              Status
+            </TabsTrigger>
+            <TabsTrigger value="inbox" className={tabTriggerClass}>
+              Inbox
+            </TabsTrigger>
+            <TabsTrigger value="vault" className={tabTriggerClass}>
+              Credentials
+            </TabsTrigger>
+            <TabsTrigger value="activity" className={tabTriggerClass}>
+              Activity
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="status" className="mt-6">

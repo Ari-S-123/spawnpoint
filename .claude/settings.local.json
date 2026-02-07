@@ -28,7 +28,8 @@
       "Bash(bun -e:*)",
       "WebFetch(domain:www.better-auth.com)",
       "Bash(bun run format:*)",
-      "Bash(bun run lint)"
+      "Bash(bun run lint)",
+      "Bash(bun scripts/test-agentmail.ts:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

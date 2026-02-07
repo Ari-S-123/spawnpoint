@@ -114,7 +114,3 @@ src/
   types/               # Zod schemas, platform types, SSE event types
 proxy.ts               # Auth middleware (protects /dashboard, /api)
 ```
-
-## License
-
-MIT

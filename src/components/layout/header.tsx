@@ -13,7 +13,7 @@ export function Header({ breadcrumbs = [] }: { breadcrumbs?: Breadcrumb[] }) {
   const backHref = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2]?.href : undefined;
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-6">
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-zinc-800/50 px-6">
       <SidebarTrigger className="-ml-2" />
       <Separator orientation="vertical" className="mr-2 h-4" />
 
@@ -33,7 +33,7 @@ export function Header({ breadcrumbs = [] }: { breadcrumbs?: Breadcrumb[] }) {
       <nav className="flex items-center gap-1.5 text-sm">
         {breadcrumbs.map((crumb, i) => (
           <div key={i} className="flex items-center gap-1.5">
-            {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/40" />}
+            {i > 0 ? <ChevronRight className="h-3 w-3 text-muted-foreground/40" /> : null}
             {crumb.href && i < breadcrumbs.length - 1 ? (
               <Link href={crumb.href} className="text-muted-foreground transition-colors hover:text-foreground">
                 {crumb.label}

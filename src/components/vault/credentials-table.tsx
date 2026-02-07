@@ -5,10 +5,20 @@ import { Eye, EyeOff, Copy, Check } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import type { Platform, PlatformCredential } from '@/types';
 
 const PLATFORMS: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'twitter'];
+
+const PLATFORM_COLORS: Record<string, string> = {
+  instagram: 'border-pink-500/30 text-pink-300',
+  tiktok: 'border-cyan-400/30 text-cyan-300',
+  twitter: 'border-zinc-400/30 text-zinc-300',
+  mintlify: 'border-green-400/30 text-green-300',
+  vercel: 'border-zinc-300/30 text-zinc-300',
+  sentry: 'border-purple-400/30 text-purple-300'
+};
 
 export function CredentialsTable({ agentId }: { agentId: string }) {
   const [credentials, setCredentials] = useState<Record<string, PlatformCredential | null>>({});
@@ -43,7 +53,7 @@ export function CredentialsTable({ agentId }: { agentId: string }) {
   }
 
   return (
-    <div className="rounded-lg border">
+    <div className="overflow-hidden rounded-xl border border-zinc-800/50">
       <Table>
         <TableHeader>
           <TableRow>
@@ -62,19 +72,33 @@ export function CredentialsTable({ agentId }: { agentId: string }) {
             return (
               <TableRow key={platform}>
                 <TableCell>
-                  <Badge variant="outline" className="capitalize">
+                  <Badge variant="outline" className={cn('capitalize', PLATFORM_COLORS[platform])}>
                     {platform}
                   </Badge>
                 </TableCell>
                 <TableCell className="font-mono text-sm">
                   {cred?.email ?? (
-                    <Button variant="ghost" size="sm" disabled={isLoading} onClick={() => fetchCredential(platform)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={isLoading}
+                      onClick={() => fetchCredential(platform)}
+                      className="text-amber-400/70 hover:bg-amber-500/10 hover:text-amber-300"
+                    >
                       {isLoading ? 'Loading...' : 'Load'}
                     </Button>
                   )}
                 </TableCell>
                 <TableCell className="font-mono text-sm">
-                  {cred ? (isRevealed ? cred.password : '••••••••••••') : '—'}
+                  {cred ? (
+                    isRevealed ? (
+                      <span className="text-amber-200/80">{cred.password}</span>
+                    ) : (
+                      '••••••••••••'
+                    )
+                  ) : (
+                    '—'
+                  )}
                 </TableCell>
                 <TableCell>
                   {cred && (
@@ -82,7 +106,7 @@ export function CredentialsTable({ agentId }: { agentId: string }) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="h-8 w-8 hover:bg-amber-500/10 hover:text-amber-300"
                         onClick={() =>
                           setRevealed((prev) => ({
                             ...prev,
@@ -95,7 +119,7 @@ export function CredentialsTable({ agentId }: { agentId: string }) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="h-8 w-8 hover:bg-amber-500/10 hover:text-amber-300"
                         onClick={() => handleCopy(cred.password, `${platform}-pw`)}
                       >
                         {copiedField === `${platform}-pw` ? (

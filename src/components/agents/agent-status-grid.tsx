@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useTaskStream } from '@/hooks/use-task-stream';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,30 +36,37 @@ const PLATFORMS: { key: Platform; name: string }[] = [
 export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; initialTasks: Task[] }) {
   const { events, isConnected } = useTaskStream(agentId);
 
-  const tasksByPlatform = new Map<string, { status: string; message?: string; browserSessionId?: string | null }>();
-
-  for (const task of initialTasks) {
-    tasksByPlatform.set(task.platform, {
-      status: task.status,
-      message: task.errorMessage ?? undefined,
-      browserSessionId: task.browserSessionId
-    });
-  }
-
-  for (const event of events) {
-    tasksByPlatform.set(event.platform, {
-      status: event.status,
-      message: event.message,
-      browserSessionId: event.browserSessionId ?? tasksByPlatform.get(event.platform)?.browserSessionId
-    });
-  }
+  const tasksByPlatform = useMemo(() => {
+    const map = new Map<string, { status: string; message?: string; browserSessionId?: string | null }>();
+    for (const task of initialTasks) {
+      map.set(task.platform, {
+        status: task.status,
+        message: task.errorMessage ?? undefined,
+        browserSessionId: task.browserSessionId
+      });
+    }
+    for (const event of events) {
+      map.set(event.platform, {
+        status: event.status,
+        message: event.message,
+        browserSessionId: event.browserSessionId ?? map.get(event.platform)?.browserSessionId
+      });
+    }
+    return map;
+  }, [initialTasks, events]);
 
   return (
-    <div className="rounded-xl border border-border/50 bg-card/50">
+    <div className="rounded-xl border border-zinc-800/50 bg-card/50">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border/30 px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-zinc-800/30 px-4 py-2.5">
         <span className="text-xs font-medium text-muted-foreground">Connections</span>
-        <Badge variant={isConnected ? 'default' : 'secondary'} className="h-5 gap-1 px-1.5 text-[10px]">
+        <Badge
+          variant={isConnected ? 'default' : 'secondary'}
+          className={cn(
+            'h-5 gap-1 px-1.5 text-[10px]',
+            isConnected && 'border border-amber-500/25 bg-amber-500/15 text-amber-300'
+          )}
+        >
           {isConnected ? <Wifi className="h-2.5 w-2.5" /> : <WifiOff className="h-2.5 w-2.5" />}
           {isConnected ? 'Live' : '...'}
         </Badge>

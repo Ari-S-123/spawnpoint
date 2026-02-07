@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Sparkles } from 'lucide-react';
 
 const MAX_AGENTS = 3;
+const AGENT_NAME_PATTERN = /^[a-zA-Z0-9-]+$/;
 
 export function CreateAgentForm({ agentCount }: { agentCount: number }) {
   const atLimit = agentCount >= MAX_AGENTS;
@@ -27,7 +28,7 @@ export function CreateAgentForm({ agentCount }: { agentCount: number }) {
       return;
     }
 
-    if (!/^[a-zA-Z0-9-]+$/.test(name)) {
+    if (!AGENT_NAME_PATTERN.test(name)) {
       setError('Only alphanumeric characters and hyphens allowed.');
       return;
     }
@@ -59,7 +60,7 @@ export function CreateAgentForm({ agentCount }: { agentCount: number }) {
   }
 
   return (
-    <Card className="border-border/50">
+    <Card className="border-zinc-800/50 bg-zinc-900/50">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -84,14 +85,14 @@ export function CreateAgentForm({ agentCount }: { agentCount: number }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={isLoading || atLimit}
-              className="h-10"
+              className="h-10 border-zinc-700/50 bg-zinc-900/50 focus-visible:border-amber-500/50 focus-visible:ring-amber-500/20"
             />
-            {error && <p className="mt-1.5 text-sm text-destructive">{error}</p>}
+            {error ? <p className="mt-1.5 text-sm text-destructive">{error}</p> : null}
           </div>
           <Button
             type="submit"
             disabled={isLoading || atLimit || name.length < 2}
-            className="bg-amber-500/90 text-zinc-950 hover:bg-amber-400"
+            className="rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-200 transition-all duration-300 hover:border-amber-400/50 hover:bg-amber-500/20 hover:text-amber-100"
           >
             {isLoading ? (
               <>

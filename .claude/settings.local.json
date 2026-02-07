@@ -37,7 +37,8 @@
       "mcp__chrome-devtools__take_snapshot",
       "mcp__chrome-devtools__click",
       "Bash(node -e:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(git add:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

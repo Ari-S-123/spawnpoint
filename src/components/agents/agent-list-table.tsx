@@ -101,7 +101,12 @@ export function AgentListTable({ agents }: { agents: Agent[] }) {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" asChild className="text-zinc-400 hover:bg-amber-500/10 hover:text-amber-300">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="text-zinc-400 hover:bg-amber-500/10 hover:text-amber-300"
+                    >
                       <Link href={`/dashboard/agents/${agent.id}`}>
                         <ExternalLink className="mr-1 h-3 w-3" />
                         View

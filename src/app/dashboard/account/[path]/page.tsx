@@ -7,7 +7,7 @@ export default async function AccountPage({ params }: { params: Promise<{ path: 
   const { path } = await params;
   return (
     <>
-      <Header title="Settings" />
+      <Header breadcrumbs={[{ label: 'Settings' }]} />
       <div className="p-6 lg:p-8">
         <AccountView path={path} />
       </div>

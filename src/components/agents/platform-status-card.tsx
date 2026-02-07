@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Check, AlertTriangle, Loader2, Clock, XCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,12 +8,12 @@ import { cn } from '@/lib/utils';
 import type { Platform } from '@/types';
 
 const STATUS_CONFIG = {
-  pending: { label: 'Pending', variant: 'secondary' as const, pulse: false },
-  in_progress: { label: 'In Progress', variant: 'default' as const, pulse: true },
-  awaiting_verification: { label: 'Verifying', variant: 'outline' as const, pulse: true },
-  needs_human: { label: 'Needs Human', variant: 'destructive' as const, pulse: true },
-  completed: { label: 'Completed', variant: 'default' as const, pulse: false },
-  failed: { label: 'Failed', variant: 'destructive' as const, pulse: false }
+  pending: { label: 'Pending', variant: 'secondary' as const, pulse: false, icon: Clock },
+  in_progress: { label: 'In Progress', variant: 'default' as const, pulse: true, icon: Loader2 },
+  awaiting_verification: { label: 'Verifying', variant: 'outline' as const, pulse: true, icon: Loader2 },
+  needs_human: { label: 'Needs Human', variant: 'destructive' as const, pulse: true, icon: AlertTriangle },
+  completed: { label: 'Completed', variant: 'default' as const, pulse: false, icon: Check },
+  failed: { label: 'Failed', variant: 'destructive' as const, pulse: false, icon: XCircle }
 } as const;
 
 const PLATFORM_DISPLAY: Record<Platform, { name: string; color: string }> = {
@@ -35,14 +35,23 @@ type Props = {
 export function PlatformStatusCard({ platform, status, message, browserSessionId }: Props) {
   const display = PLATFORM_DISPLAY[platform];
   const statusConfig = STATUS_CONFIG[status];
+  const StatusIcon = statusConfig.icon;
 
   return (
-    <Card className={cn('relative overflow-hidden', status === 'completed' && 'border-green-500/30')}>
+    <Card
+      className={cn(
+        'relative overflow-hidden transition-all',
+        status === 'completed' && 'border-emerald-500/20',
+        status === 'failed' && 'border-red-500/20',
+        status === 'needs_human' && 'border-amber-500/20'
+      )}
+    >
       <div className={cn('absolute inset-x-0 top-0 h-1 bg-gradient-to-r', display.color)} />
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium">{display.name}</CardTitle>
-          <Badge variant={statusConfig.variant} className={cn(statusConfig.pulse && 'animate-pulse')}>
+          <Badge variant={statusConfig.variant} className={cn('gap-1', statusConfig.pulse && 'animate-pulse')}>
+            <StatusIcon className={cn('h-3 w-3', status === 'in_progress' && 'animate-spin')} />
             {statusConfig.label}
           </Badge>
         </div>
@@ -53,7 +62,7 @@ export function PlatformStatusCard({ platform, status, message, browserSessionId
           <Button
             variant="outline"
             size="sm"
-            className="w-full"
+            className="w-full border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
             onClick={() => window.open(`https://www.browserbase.com/sessions/${browserSessionId}`, '_blank')}
           >
             <ExternalLink className="mr-1 h-3 w-3" />

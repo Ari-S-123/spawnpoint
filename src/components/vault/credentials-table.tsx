@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import type { Platform, PlatformCredential } from '@/types';
 
-const PLATFORMS: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'tiktok', 'twitter'];
+const PLATFORMS: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'twitter'];
 
 const PLATFORM_COLORS: Record<string, string> = {
   instagram: 'border-pink-500/30 text-pink-300',

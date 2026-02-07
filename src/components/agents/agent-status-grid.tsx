@@ -1,10 +1,10 @@
 'use client';
 
 import { useTaskStream } from '@/hooks/use-task-stream';
-import { PlatformStatusCard } from '@/components/agents/platform-status-card';
 import { Badge } from '@/components/ui/badge';
-import { Wifi, WifiOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Wifi, WifiOff, Check, Loader2, Clock, AlertTriangle, XCircle, ExternalLink } from 'lucide-react';
 import type { Platform } from '@/types';
 
 type Task = {
@@ -15,13 +15,28 @@ type Task = {
   errorMessage: string | null;
 };
 
+const STATUS_CONFIG: Record<string, { label: string; dotColor: string; icon: React.ElementType; spin?: boolean }> = {
+  pending: { label: 'Pending', dotColor: 'bg-zinc-600', icon: Clock },
+  in_progress: { label: 'Running', dotColor: 'bg-amber-400', icon: Loader2, spin: true },
+  awaiting_verification: { label: 'Verifying', dotColor: 'bg-amber-400', icon: Loader2, spin: true },
+  needs_human: { label: 'Action', dotColor: 'bg-red-400', icon: AlertTriangle },
+  completed: { label: 'Done', dotColor: 'bg-emerald-400', icon: Check },
+  failed: { label: 'Failed', dotColor: 'bg-red-400', icon: XCircle }
+};
+
+const PLATFORMS: { key: Platform; name: string }[] = [
+  { key: 'vercel', name: 'Vercel' },
+  { key: 'sentry', name: 'Sentry' },
+  { key: 'mintlify', name: 'Mintlify' },
+  { key: 'instagram', name: 'Instagram' },
+  { key: 'twitter', name: 'X / Twitter' }
+];
+
 export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; initialTasks: Task[] }) {
   const { events, isConnected } = useTaskStream(agentId);
 
-  // Merge SSE events with initial task data to get latest status per platform
   const tasksByPlatform = new Map<string, { status: string; message?: string; browserSessionId?: string | null }>();
 
-  // Start with initial task data
   for (const task of initialTasks) {
     tasksByPlatform.set(task.platform, {
       status: task.status,
@@ -30,7 +45,6 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
     });
   }
 
-  // Overlay with latest SSE events (most recent wins)
   for (const event of events) {
     tasksByPlatform.set(event.platform, {
       status: event.status,
@@ -40,28 +54,49 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
   }
 
   return (
-    <div>
-      <div className="mb-4 flex items-center gap-2">
+    <div className="rounded-xl border border-zinc-800/50 bg-card/50">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-zinc-800/30 px-4 py-2.5">
+        <span className="text-xs font-medium text-muted-foreground">Connections</span>
         <Badge
           variant={isConnected ? 'default' : 'secondary'}
-          className={cn('gap-1', isConnected && 'border border-amber-500/25 bg-amber-500/15 text-amber-300')}
+          className={cn(
+            'h-5 gap-1 px-1.5 text-[10px]',
+            isConnected && 'border border-amber-500/25 bg-amber-500/15 text-amber-300'
+          )}
         >
-          {isConnected ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
-          {isConnected ? 'Live' : 'Connecting...'}
+          {isConnected ? <Wifi className="h-2.5 w-2.5" /> : <WifiOff className="h-2.5 w-2.5" />}
+          {isConnected ? 'Live' : '...'}
         </Badge>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {(['vercel', 'sentry', 'mintlify', 'instagram', 'tiktok', 'twitter'] as Platform[]).map((platform) => {
-          const data = tasksByPlatform.get(platform);
+      {/* Platform list */}
+      <div className="divide-y divide-border/20">
+        {PLATFORMS.map(({ key, name }) => {
+          const data = tasksByPlatform.get(key);
+          const status = data?.status ?? 'pending';
+          const config = (STATUS_CONFIG[status] ?? STATUS_CONFIG['pending'])!;
+          const StatusIcon = config.icon;
+
           return (
-            <PlatformStatusCard
-              key={platform}
-              platform={platform}
-              status={(data?.status ?? 'pending') as 'pending'}
-              message={data?.message}
-              browserSessionId={data?.browserSessionId}
-            />
+            <div key={key} className="flex items-center gap-2.5 px-4 py-2">
+              <div className={cn('h-2 w-2 shrink-0 rounded-full', config.dotColor)} />
+              <span className="min-w-0 flex-1 truncate text-xs">{name}</span>
+              <div className="flex items-center gap-1.5">
+                <StatusIcon className={cn('h-3 w-3 text-muted-foreground', config.spin && 'animate-spin')} />
+                <span className="text-[10px] text-muted-foreground">{config.label}</span>
+              </div>
+              {status === 'needs_human' && data?.browserSessionId && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5 text-amber-400"
+                  onClick={() => window.open(`https://www.browserbase.com/sessions/${data.browserSessionId}`, '_blank')}
+                >
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </Button>
+              )}
+            </div>
           );
         })}
       </div>

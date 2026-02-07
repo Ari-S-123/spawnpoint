@@ -63,10 +63,8 @@ export function CreateAgentForm({ agentCount }: { agentCount: number }) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-amber-400/70" />
-            <span className="font-light text-zinc-100" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-              Create New Agent
-            </span>
+            <Sparkles className="h-5 w-5 text-amber-400" />
+            Create New Agent
           </CardTitle>
           <Badge variant={atLimit ? 'destructive' : 'secondary'} className="text-xs">
             {agentCount}/{MAX_AGENTS} agents

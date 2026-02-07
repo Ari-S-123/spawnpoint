@@ -52,18 +52,19 @@ The core value proposition: what currently takes an operator 30-60 minutes of ma
 
 ## 2. Hackathon Context & Constraints
 
-| Constraint | Detail |
-|---|---|
-| **Event** | BetterHack @ Y Combinator |
-| **Duration** | 24 hours |
-| **Team Size** | 1-4 members |
-| **Prize** | Guaranteed YC interview + credits for 1st place |
-| **Core Requirement** | Build with Better Auth (use Neon Auth which is powered by Better Auth) |
+| Constraint              | Detail                                                                 |
+| ----------------------- | ---------------------------------------------------------------------- |
+| **Event**               | BetterHack @ Y Combinator                                              |
+| **Duration**            | 24 hours                                                               |
+| **Team Size**           | 1-4 members                                                            |
+| **Prize**               | Guaranteed YC interview + credits for 1st place                        |
+| **Core Requirement**    | Build with Better Auth (use Neon Auth which is powered by Better Auth) |
 | **No Pre-Written Code** | All code must be written during the hackathon; pre-planning is allowed |
 
 ### Scope Decisions for Hackathon MVP
 
 **IN SCOPE (MVP):**
+
 - AgentMail inbox creation
 - Automated signup for **Vercel** and **Sentry** (highest success probability — no CAPTCHAs)
 - Manual-assist flow for social platforms (Instagram, TikTok, X) with live browser view
@@ -73,6 +74,7 @@ The core value proposition: what currently takes an operator 30-60 minutes of ma
 - Neon Auth for operator authentication
 
 **DEFERRED (Post-Hackathon):**
+
 - Full CAPTCHA-solving integration
 - CodeRabbit and LinkedIn automation
 - Neon database auto-provisioning per agent
@@ -148,14 +150,15 @@ The core value proposition: what currently takes an operator 30-60 minutes of ma
 
 ### Core Framework
 
-| Package | Version | Purpose |
-|---|---|---|
-| `next` | `16.1.6` | App Router, React Server Components, API Routes, Server Actions |
-| `react` | `19.x` | UI rendering (bundled with Next.js 16) |
-| `typescript` | `5.7.x` | Type safety across the entire codebase |
-| `bun` | `1.3.8+` | Package manager, runtime, bundler — faster than npm/yarn |
+| Package      | Version  | Purpose                                                         |
+| ------------ | -------- | --------------------------------------------------------------- |
+| `next`       | `16.1.6` | App Router, React Server Components, API Routes, Server Actions |
+| `react`      | `19.x`   | UI rendering (bundled with Next.js 16)                          |
+| `typescript` | `5.7.x`  | Type safety across the entire codebase                          |
+| `bun`        | `1.3.8+` | Package manager, runtime, bundler — faster than npm/yarn        |
 
 **Next.js 16 Key Features Used:**
+
 - App Router with nested layouts
 - Server Components (default) and Client Components (`'use client'`)
 - Route Handlers (`app/api/.../route.ts`) for REST endpoints
@@ -165,16 +168,17 @@ The core value proposition: what currently takes an operator 30-60 minutes of ma
 
 ### UI Layer
 
-| Package | Version | Purpose |
-|---|---|---|
-| `shadcn/ui` | latest | Component library (Button, Card, Dialog, Toast, Table, Badge, Tabs, Input, Form, Skeleton, Progress, Separator, ScrollArea, Sheet) |
-| `tailwindcss` | `4.x` | Utility-first CSS (Shadcn uses Tailwind v4) |
-| `lucide-react` | latest | Icon library (consistent with Shadcn) |
-| `sonner` | latest | Toast notifications (Shadcn's Toast uses Sonner) |
-| `react-hook-form` | latest | Form state management |
-| `zod` | `4.x` | Schema validation for forms and API payloads |
+| Package           | Version | Purpose                                                                                                                            |
+| ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `shadcn/ui`       | latest  | Component library (Button, Card, Dialog, Toast, Table, Badge, Tabs, Input, Form, Skeleton, Progress, Separator, ScrollArea, Sheet) |
+| `tailwindcss`     | `4.x`   | Utility-first CSS (Shadcn uses Tailwind v4)                                                                                        |
+| `lucide-react`    | latest  | Icon library (consistent with Shadcn)                                                                                              |
+| `sonner`          | latest  | Toast notifications (Shadcn's Toast uses Sonner)                                                                                   |
+| `react-hook-form` | latest  | Form state management                                                                                                              |
+| `zod`             | `4.x`   | Schema validation for forms and API payloads                                                                                       |
 
 **Shadcn Components to Install:**
+
 ```bash
 bunx shadcn@latest init
 bunx shadcn@latest add button card dialog toast table badge tabs input form \
@@ -184,14 +188,14 @@ bunx shadcn@latest add button card dialog toast table badge tabs input form \
 
 ### Backend & AI
 
-| Package | Version | Purpose |
-|---|---|---|
-| `ai` | `6.x` | Vercel AI SDK v6 — `generateText`, `streamText`, Agent abstraction |
-| `@ai-sdk/anthropic` | `3.x` | Anthropic provider for AI SDK |
-| `agentmail` | latest | AgentMail SDK — inbox creation, message polling, OTP extraction |
-| `playwright-core` | latest | Browser automation (used with Browserbase, NOT standalone) |
-| `@browserbasehq/sdk` | latest | Browserbase SDK — cloud browser sessions |
-| `node-vault` | latest | HashiCorp Vault client for Node.js |
+| Package              | Version | Purpose                                                            |
+| -------------------- | ------- | ------------------------------------------------------------------ |
+| `ai`                 | `6.x`   | Vercel AI SDK v6 — `generateText`, `streamText`, Agent abstraction |
+| `@ai-sdk/anthropic`  | `3.x`   | Anthropic provider for AI SDK                                      |
+| `agentmail`          | latest  | AgentMail SDK — inbox creation, message polling, OTP extraction    |
+| `playwright-core`    | latest  | Browser automation (used with Browserbase, NOT standalone)         |
+| `@browserbasehq/sdk` | latest  | Browserbase SDK — cloud browser sessions                           |
+| `node-vault`         | latest  | HashiCorp Vault client for Node.js                                 |
 
 **AI SDK v6 Key Patterns:**
 
@@ -208,14 +212,15 @@ const { output } = await generateText({
     schema: z.object({
       action: z.enum(['fill_form', 'click_button', 'extract_otp', 'screenshot']),
       selector: z.string().optional(),
-      value: z.string().optional(),
-    }),
+      value: z.string().optional()
+    })
   }),
-  prompt: 'Analyze this screenshot and determine the next action...',
+  prompt: 'Analyze this screenshot and determine the next action...'
 });
 ```
 
 **Claude Opus 4.6 Configuration:**
+
 - Model ID: `claude-opus-4-6-20250414` (use the exact model string from the Anthropic provider)
 - Extended Thinking: Enabled via `providerOptions.anthropic.thinking.type: 'enabled'`
 - Budget Tokens: Set `budgetTokens` for thinking depth control (e.g., `10000` for "high" thinking)
@@ -227,22 +232,22 @@ const result = await generateText({
     anthropic: {
       thinking: {
         type: 'enabled',
-        budgetTokens: 10000,
-      },
-    },
+        budgetTokens: 10000
+      }
+    }
   },
-  prompt: '...',
+  prompt: '...'
 });
 ```
 
 ### Database & Auth
 
-| Package | Version | Purpose |
-|---|---|---|
-| `@neondatabase/auth` | latest | Neon Auth SDK (powered by Better Auth) — handles sign-up, sign-in, sessions, email OTP |
-| `@neondatabase/serverless` | latest | Neon serverless driver for PostgreSQL |
-| `drizzle-orm` | latest | Type-safe SQL ORM |
-| `drizzle-kit` | latest | Migration tooling |
+| Package                    | Version | Purpose                                                                                |
+| -------------------------- | ------- | -------------------------------------------------------------------------------------- |
+| `@neondatabase/auth`       | latest  | Neon Auth SDK (powered by Better Auth) — handles sign-up, sign-in, sessions, email OTP |
+| `@neondatabase/serverless` | latest  | Neon serverless driver for PostgreSQL                                                  |
+| `drizzle-orm`              | latest  | Type-safe SQL ORM                                                                      |
+| `drizzle-kit`              | latest  | Migration tooling                                                                      |
 
 **Neon Auth Setup Summary (from official docs):**
 
@@ -258,9 +263,9 @@ const result = await generateText({
 
 ### Monitoring
 
-| Package | Version | Purpose |
-|---|---|---|
-| `@sentry/nextjs` | latest | Error tracking, performance monitoring |
+| Package          | Version | Purpose                                |
+| ---------------- | ------- | -------------------------------------- |
+| `@sentry/nextjs` | latest  | Error tracking, performance monitoring |
 
 ---
 
@@ -409,8 +414,8 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
+    url: process.env.DATABASE_URL!
+  }
 });
 ```
 
@@ -432,20 +437,13 @@ export const taskStatusEnum = pgEnum('task_status', [
   'awaiting_verification',
   'needs_human',
   'completed',
-  'failed',
+  'failed'
 ]);
 
 /**
  * Enum for the supported platforms.
  */
-export const platformEnum = pgEnum('platform', [
-  'instagram',
-  'tiktok',
-  'twitter',
-  'mintlify',
-  'vercel',
-  'sentry',
-]);
+export const platformEnum = pgEnum('platform', ['instagram', 'tiktok', 'twitter', 'mintlify', 'vercel', 'sentry']);
 
 /**
  * Agents table — each row represents one AI agent being onboarded.
@@ -463,7 +461,7 @@ export const agents = pgTable('agents', {
   /** Timestamp of creation. */
   createdAt: timestamptz('created_at').defaultNow().notNull(),
   /** Timestamp of last update. */
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
+  updatedAt: timestamptz('updated_at').defaultNow().notNull()
 });
 
 /**
@@ -472,7 +470,9 @@ export const agents = pgTable('agents', {
 export const setupTasks = pgTable('setup_tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
   /** Foreign key to the agents table. */
-  agentId: uuid('agent_id').references(() => agents.id, { onDelete: 'cascade' }).notNull(),
+  agentId: uuid('agent_id')
+    .references(() => agents.id, { onDelete: 'cascade' })
+    .notNull(),
   /** Which platform this task is for. */
   platform: platformEnum('platform').notNull(),
   /** Current lifecycle status. */
@@ -489,7 +489,7 @@ export const setupTasks = pgTable('setup_tasks', {
   /** Arbitrary metadata (e.g., signup URL used, retry count). */
   metadata: jsonb('metadata').$type<Record<string, unknown>>(),
   /** Timestamp of last status change. */
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
+  updatedAt: timestamptz('updated_at').defaultNow().notNull()
 });
 
 /**
@@ -504,7 +504,7 @@ export const auditLog = pgTable('audit_log', {
   /** The resource identifier (e.g., agent ID, task ID). */
   resourceId: text('resource_id'),
   /** Timestamp. */
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
+  createdAt: timestamptz('created_at').defaultNow().notNull()
 });
 ```
 
@@ -566,17 +566,11 @@ import { neonAuthMiddleware } from '@neondatabase/auth/next/server';
  * Unauthenticated users are redirected to the sign-in page.
  */
 export default neonAuthMiddleware({
-  loginUrl: '/auth/sign-in',
+  loginUrl: '/auth/sign-in'
 });
 
 export const config = {
-  matcher: [
-    '/dashboard/:path*',
-    '/api/agents/:path*',
-    '/api/tasks/:path*',
-    '/api/inbox/:path*',
-    '/api/vault/:path*',
-  ],
+  matcher: ['/dashboard/:path*', '/api/agents/:path*', '/api/tasks/:path*', '/api/inbox/:path*', '/api/vault/:path*']
 };
 ```
 
@@ -624,7 +618,7 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 
 export const metadata: Metadata = {
   title: 'SpawnPoint — One-Click Agent Setup',
-  description: 'Automated account and credential setup for AI agents.',
+  description: 'Automated account and credential setup for AI agents.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -669,8 +663,8 @@ export default async function AuthPage({ params }: { params: Promise<{ path: str
 **File:** `src/app/globals.css` (add at top)
 
 ```css
-@import "tailwindcss";
-@import "@neondatabase/auth/ui/tailwind";
+@import 'tailwindcss';
+@import '@neondatabase/auth/ui/tailwind';
 ```
 
 ---
@@ -688,20 +682,13 @@ export const CreateAgentSchema = z.object({
     .string()
     .min(2, 'Agent name must be at least 2 characters.')
     .max(48, 'Agent name must be at most 48 characters.')
-    .regex(/^[a-zA-Z0-9-]+$/, 'Only alphanumeric characters and hyphens allowed.'),
+    .regex(/^[a-zA-Z0-9-]+$/, 'Only alphanumeric characters and hyphens allowed.')
 });
 
 export type CreateAgentInput = z.infer<typeof CreateAgentSchema>;
 
 /** The six target platforms. */
-export const PLATFORMS = [
-  'instagram',
-  'tiktok',
-  'twitter',
-  'mintlify',
-  'vercel',
-  'sentry',
-] as const;
+export const PLATFORMS = ['instagram', 'tiktok', 'twitter', 'mintlify', 'vercel', 'sentry'] as const;
 
 export type Platform = (typeof PLATFORMS)[number];
 
@@ -761,8 +748,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       emailInput: 'input[name="email"]',
       passwordInput: 'input[name="password"]',
       submitButton: 'button[type="submit"]',
-      dashboardUrl: '**/dashboard**',
-    },
+      dashboardUrl: '**/dashboard**'
+    }
   },
   sentry: {
     platform: 'sentry',
@@ -772,8 +759,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       emailInput: '#id_username',
       passwordInput: '#id_password',
       submitButton: 'button[type="submit"]',
-      dashboardUrl: '**/organizations/**',
-    },
+      dashboardUrl: '**/organizations/**'
+    }
   },
   mintlify: {
     platform: 'mintlify',
@@ -782,8 +769,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
     selectors: {
       emailInput: 'input[type="email"]',
       passwordInput: 'input[type="password"]',
-      submitButton: 'button[type="submit"]',
-    },
+      submitButton: 'button[type="submit"]'
+    }
   },
   instagram: {
     platform: 'instagram',
@@ -793,8 +780,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       emailInput: 'input[name="emailOrPhone"]',
       passwordInput: 'input[name="password"]',
       submitButton: 'button[type="submit"]',
-      otpInput: 'input[name="confirmationCode"]',
-    },
+      otpInput: 'input[name="confirmationCode"]'
+    }
   },
   tiktok: {
     platform: 'tiktok',
@@ -803,8 +790,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
     selectors: {
       emailInput: 'input[name="email"]',
       passwordInput: 'input[name="password"]',
-      submitButton: 'button[type="submit"]',
-    },
+      submitButton: 'button[type="submit"]'
+    }
   },
   twitter: {
     platform: 'twitter',
@@ -813,9 +800,9 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
     selectors: {
       emailInput: 'input[name="email"]',
       passwordInput: 'input[name="password"]',
-      submitButton: 'button[data-testid="LoginForm_Login_Button"]',
-    },
-  },
+      submitButton: 'button[data-testid="LoginForm_Login_Button"]'
+    }
+  }
 };
 ```
 
@@ -851,10 +838,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const body = await request.json();
   const parsed = CreateAgentSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: 'Invalid input', details: parsed.error.flatten() },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten() }, { status: 400 });
   }
 
   const { name } = parsed.data;
@@ -872,7 +856,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         name: sanitizedName,
         email,
         inboxId: inbox.inbox_id,
-        operatorId: session.user.id,
+        operatorId: session.user.id
       })
       .returning();
 
@@ -889,7 +873,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         await storeCredential(vaultPath, {
           email,
           password,
-          createdAt: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         });
 
         const [task] = await db
@@ -898,12 +882,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             agentId: agent.id,
             platform,
             status: 'pending',
-            vaultPath,
+            vaultPath
           })
           .returning();
 
         return task;
-      }),
+      })
     );
 
     // 6. Enqueue the signup orchestration (non-blocking)
@@ -912,10 +896,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ agent, tasks: taskRecords }, { status: 201 });
   } catch (error) {
     console.error('[POST /api/agents] Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to create agent.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to create agent.' }, { status: 500 });
   }
 }
 ```
@@ -936,7 +917,7 @@ import { getTaskEventEmitter } from '@/lib/events';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ agentId: string }> },
+  { params }: { params: Promise<{ agentId: string }> }
 ): Promise<Response> {
   const { agentId } = await params;
   const emitter = getTaskEventEmitter();
@@ -969,15 +950,15 @@ export async function GET(
         clearInterval(heartbeat);
         controller.close();
       });
-    },
+    }
   });
 
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
-    },
+      Connection: 'keep-alive'
+    }
   });
 }
 ```
@@ -1010,12 +991,12 @@ export async function createAgentEmail(agentName: string): Promise<{
 }> {
   const inbox = await client.inboxes.create({
     username: agentName,
-    domain: 'agentmail.to',
+    domain: 'agentmail.to'
   });
 
   return {
     inbox_id: inbox.inbox_id,
-    username: inbox.username,
+    username: inbox.username
   };
 }
 
@@ -1032,21 +1013,20 @@ export async function createAgentEmail(agentName: string): Promise<{
 export async function waitForVerification(
   inboxId: string,
   platform: string,
-  maxAttempts = 30,
+  maxAttempts = 30
 ): Promise<{ type: 'otp'; value: string } | { type: 'link'; value: string }> {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const messages = await client.inboxes.messages.list({ inbox_id: inboxId });
 
     const verificationEmail = messages.find(
       (msg: { from?: string; subject?: string }) =>
-        msg.from?.toLowerCase().includes(platform) ||
-        msg.subject?.match(/verify|confirm|code|welcome|activate/i),
+        msg.from?.toLowerCase().includes(platform) || msg.subject?.match(/verify|confirm|code|welcome|activate/i)
     );
 
     if (verificationEmail) {
       const message = await client.inboxes.messages.get({
         inbox_id: inboxId,
-        message_id: verificationEmail.message_id,
+        message_id: verificationEmail.message_id
       });
 
       const textContent = message.text ?? message.html ?? '';
@@ -1058,9 +1038,7 @@ export async function waitForVerification(
       }
 
       // Try verification link extraction
-      const linkMatch = textContent.match(
-        /https?:\/\/[^\s"'<>]+(?:verify|confirm|activate|token|code)[^\s"'<>]*/i,
-      );
+      const linkMatch = textContent.match(/https?:\/\/[^\s"'<>]+(?:verify|confirm|activate|token|code)[^\s"'<>]*/i);
       if (linkMatch?.[0]) {
         return { type: 'link', value: linkMatch[0] };
       }
@@ -1094,7 +1072,7 @@ export async function listInboxMessages(inboxId: string): Promise<
     from: String(msg.from ?? 'Unknown'),
     subject: String(msg.subject ?? '(No subject)'),
     date: String(msg.date ?? ''),
-    snippet: String(msg.snippet ?? ''),
+    snippet: String(msg.snippet ?? '')
   }));
 }
 ```
@@ -1117,7 +1095,7 @@ import Browserbase from '@browserbasehq/sdk';
  * Singleton Browserbase SDK client.
  */
 const bb = new Browserbase({
-  apiKey: process.env.BROWSERBASE_API_KEY!,
+  apiKey: process.env.BROWSERBASE_API_KEY!
 });
 
 /**
@@ -1132,7 +1110,7 @@ export async function createBrowserSession(): Promise<{
   sessionId: string;
 }> {
   const session = await bb.sessions.create({
-    projectId: process.env.BROWSERBASE_PROJECT_ID!,
+    projectId: process.env.BROWSERBASE_PROJECT_ID!
   });
 
   const browser = await chromium.connectOverCDP(session.connectUrl);
@@ -1151,7 +1129,7 @@ export async function createBrowserSession(): Promise<{
   return {
     browser,
     page,
-    sessionId: session.id,
+    sessionId: session.id
   };
 }
 
@@ -1176,13 +1154,13 @@ export async function performSignup(
     };
   },
   email: string,
-  password: string,
+  password: string
 ): Promise<'completed' | 'captcha'> {
   await page.goto(config.signupUrl, { timeout: 30_000, waitUntil: 'domcontentloaded' });
 
   // Check for CAPTCHA before attempting form fill
   const captchaFrame = await page.$(
-    'iframe[src*="captcha"], iframe[src*="recaptcha"], [class*="captcha"], [id*="captcha"]',
+    'iframe[src*="captcha"], iframe[src*="recaptcha"], [class*="captcha"], [id*="captcha"]'
   );
   if (captchaFrame) {
     return 'captcha';
@@ -1197,9 +1175,7 @@ export async function performSignup(
   // Brief wait to detect if a CAPTCHA appears post-submission
   await page.waitForTimeout(3000);
 
-  const postSubmitCaptcha = await page.$(
-    'iframe[src*="captcha"], iframe[src*="recaptcha"], [class*="captcha"]',
-  );
+  const postSubmitCaptcha = await page.$('iframe[src*="captcha"], iframe[src*="recaptcha"], [class*="captcha"]');
   if (postSubmitCaptcha) {
     return 'captcha';
   }
@@ -1217,14 +1193,14 @@ export async function performSignup(
 export async function injectOTP(
   page: Page,
   otp: string,
-  selector = 'input[name="code"], input[name="confirmationCode"], input[name="otp"], input[type="tel"]',
+  selector = 'input[name="code"], input[name="confirmationCode"], input[name="otp"], input[type="tel"]'
 ): Promise<void> {
   await page.waitForSelector(selector, { timeout: 10_000 });
   await page.fill(selector, otp);
 
   // Look for a submit/verify button near the OTP input
   const verifyButton = await page.$(
-    'button:has-text("Verify"), button:has-text("Confirm"), button:has-text("Submit"), button[type="submit"]',
+    'button:has-text("Verify"), button:has-text("Confirm"), button:has-text("Submit"), button[type="submit"]'
   );
   if (verifyButton) {
     await verifyButton.click();
@@ -1263,7 +1239,7 @@ import type { PlatformCredential } from '@/types';
 const vaultClient = vault({
   apiVersion: 'v1',
   endpoint: process.env.VAULT_ADDR!,
-  token: process.env.VAULT_TOKEN!,
+  token: process.env.VAULT_TOKEN!
 });
 
 /**
@@ -1286,12 +1262,9 @@ export function generatePassword(length = 24): string {
  * @param path - The Vault path (e.g., "secret/data/agents/{id}/vercel").
  * @param credential - The credential data to store.
  */
-export async function storeCredential(
-  path: string,
-  credential: PlatformCredential,
-): Promise<void> {
+export async function storeCredential(path: string, credential: PlatformCredential): Promise<void> {
   await vaultClient.write(path, {
-    data: credential,
+    data: credential
   });
 }
 
@@ -1301,9 +1274,7 @@ export async function storeCredential(
  * @param path - The Vault path to read from.
  * @returns The stored credential data, or undefined if not found.
  */
-export async function getCredential(
-  path: string,
-): Promise<PlatformCredential | undefined> {
+export async function getCredential(path: string): Promise<PlatformCredential | undefined> {
   try {
     const result = await vaultClient.read(path);
     return result.data?.data as PlatformCredential | undefined;
@@ -1374,11 +1345,11 @@ const NextActionSchema = z.object({
     'take_screenshot',
     'report_captcha',
     'report_success',
-    'report_failure',
+    'report_failure'
   ]),
   selector: z.string().optional(),
   value: z.string().optional(),
-  reasoning: z.string(),
+  reasoning: z.string()
 });
 
 /**
@@ -1389,11 +1360,7 @@ const NextActionSchema = z.object({
  * @param email - The agent's AgentMail email address.
  * @param inboxId - The AgentMail inbox ID for verification polling.
  */
-export async function enqueueSignupTasks(
-  agentId: string,
-  email: string,
-  inboxId: string,
-): Promise<void> {
+export async function enqueueSignupTasks(agentId: string, email: string, inboxId: string): Promise<void> {
   // Prioritize non-CAPTCHA platforms first
   const orderedPlatforms: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'tiktok', 'twitter'];
 
@@ -1402,11 +1369,7 @@ export async function enqueueSignupTasks(
   const captchaLikely = orderedPlatforms.filter((p) => PLATFORM_CONFIGS[p]?.captchaLikely);
 
   // Launch non-CAPTCHA signups in parallel
-  await Promise.allSettled(
-    nonCaptcha.map((platform) =>
-      executePlatformSignup(agentId, platform, email, inboxId),
-    ),
-  );
+  await Promise.allSettled(nonCaptcha.map((platform) => executePlatformSignup(agentId, platform, email, inboxId)));
 
   // Launch CAPTCHA-likely signups sequentially (to manage operator attention)
   for (const platform of captchaLikely) {
@@ -1428,7 +1391,7 @@ async function executePlatformSignup(
   agentId: string,
   platform: Platform,
   email: string,
-  inboxId: string,
+  inboxId: string
 ): Promise<void> {
   const config = PLATFORM_CONFIGS[platform];
   if (!config) {
@@ -1449,7 +1412,7 @@ async function executePlatformSignup(
     platform,
     status: 'in_progress',
     message: `Starting ${platform} signup...`,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 
   // Retrieve the password from Vault
@@ -1467,10 +1430,7 @@ async function executePlatformSignup(
     browser = session.browser;
 
     // Store session ID for live view
-    await db
-      .update(setupTasks)
-      .set({ browserSessionId: session.sessionId })
-      .where(eq(setupTasks.agentId, agentId));
+    await db.update(setupTasks).set({ browserSessionId: session.sessionId }).where(eq(setupTasks.agentId, agentId));
 
     emitTaskUpdate({
       taskId: task?.id ?? '',
@@ -1479,7 +1439,7 @@ async function executePlatformSignup(
       status: 'in_progress',
       message: `Browser session created. Navigating to ${config.signupUrl}...`,
       browserSessionId: session.sessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     // Attempt deterministic signup
@@ -1499,7 +1459,7 @@ async function executePlatformSignup(
         status: 'needs_human',
         message: `CAPTCHA detected on ${platform}. Manual intervention required.`,
         browserSessionId: session.sessionId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
 
       // Keep browser open for operator to solve CAPTCHA via live view
@@ -1514,7 +1474,7 @@ async function executePlatformSignup(
       platform,
       status: 'awaiting_verification',
       message: `Form submitted. Waiting for verification email from ${platform}...`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     const verification = await waitForVerification(inboxId, platform);
@@ -1540,7 +1500,7 @@ async function executePlatformSignup(
       platform,
       status: 'completed',
       message: `${platform} signup completed successfully!`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
@@ -1567,11 +1527,7 @@ async function executePlatformSignup(
  * @param platform - The platform that failed.
  * @param errorContext - The error message from the failed attempt.
  */
-async function aiGuidedRecovery(
-  agentId: string,
-  platform: Platform,
-  errorContext: string,
-): Promise<void> {
+async function aiGuidedRecovery(agentId: string, platform: Platform, errorContext: string): Promise<void> {
   const session = await createBrowserSession();
 
   try {
@@ -1583,9 +1539,9 @@ async function aiGuidedRecovery(
         anthropic: {
           thinking: {
             type: 'enabled',
-            budgetTokens: 8000,
-          },
-        },
+            budgetTokens: 8000
+          }
+        }
       },
       output: Output.object({ schema: NextActionSchema }),
       messages: [
@@ -1594,16 +1550,16 @@ async function aiGuidedRecovery(
           content: `You are an expert web automation agent. You are helping to sign up for ${platform}.
 The previous automated attempt failed with error: "${errorContext}".
 Analyze the current page screenshot and determine the next best action to recover the signup flow.
-Be specific about CSS selectors and values.`,
+Be specific about CSS selectors and values.`
         },
         {
           role: 'user',
           content: [
             { type: 'text', text: 'Here is the current state of the browser. What should I do next?' },
-            { type: 'image', image: `data:image/png;base64,${screenshot}` },
-          ],
-        },
-      ],
+            { type: 'image', image: `data:image/png;base64,${screenshot}` }
+          ]
+        }
+      ]
     });
 
     if (output) {
@@ -1613,7 +1569,7 @@ Be specific about CSS selectors and values.`,
         platform,
         status: 'in_progress',
         message: `AI Recovery: ${output.reasoning}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
   } finally {
@@ -1636,7 +1592,7 @@ async function markFailed(agentId: string, platform: Platform, message: string):
     platform,
     status: 'failed',
     message: `${platform} signup failed: ${message}`,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 ```
@@ -1745,21 +1701,22 @@ export function useTaskStream(agentId: string | undefined): {
 
 ### 15.1 — Page Map
 
-| Route | Purpose | Auth Required |
-|---|---|---|
-| `/` | Landing page — marketing, hero section, CTA | No |
-| `/auth/sign-in` | Neon Auth sign-in view | No |
-| `/auth/sign-up` | Neon Auth sign-up view | No |
-| `/dashboard` | Main dashboard — agent list, quick-create | Yes |
-| `/dashboard/agents/[id]` | Agent detail — live status, inbox, vault | Yes |
-| `/account/settings` | User account settings (Neon Auth) | Yes |
-| `/account/security` | User security settings | Yes |
+| Route                    | Purpose                                     | Auth Required |
+| ------------------------ | ------------------------------------------- | ------------- |
+| `/`                      | Landing page — marketing, hero section, CTA | No            |
+| `/auth/sign-in`          | Neon Auth sign-in view                      | No            |
+| `/auth/sign-up`          | Neon Auth sign-up view                      | No            |
+| `/dashboard`             | Main dashboard — agent list, quick-create   | Yes           |
+| `/dashboard/agents/[id]` | Agent detail — live status, inbox, vault    | Yes           |
+| `/account/settings`      | User account settings (Neon Auth)           | Yes           |
+| `/account/security`      | User security settings                      | Yes           |
 
 ### 15.2 — Landing Page (`src/app/page.tsx`)
 
 Design direction: Dark theme, sleek, particle effects in the hero. Use CSS `@keyframes` and `radial-gradient` for glow effects. No external animation libraries to keep bundle lean.
 
 Key sections:
+
 1. **Hero** — "One Click. Six Platforms. Zero Friction." with a glowing CTA button.
 2. **Platform Grid** — Animated cards showing Instagram, TikTok, X, Mintlify, Vercel, Sentry logos.
 3. **How It Works** — Three-step visual (Create → Automate → Operate).
@@ -1768,6 +1725,7 @@ Key sections:
 ### 15.3 — Dashboard Page (`src/app/dashboard/page.tsx`)
 
 Layout: Sidebar navigation (Shadcn Sidebar component) with:
+
 - "Agents" (list view)
 - "Create Agent" (form)
 - "Settings" (link to `/account/settings`)
@@ -1779,22 +1737,26 @@ Main content area shows a data table of all agents with columns: Name, Email, St
 This is the core operational view with four tabs (Shadcn Tabs component):
 
 **Tab 1: Status Dashboard**
+
 - Real-time status cards for each of the 6 platforms.
 - Each card shows: Platform name + icon, status badge (Pending / In Progress / Awaiting Verification / Needs Human / Completed / Failed), latest message from the SSE stream, progress indicator.
 - "Needs Human" cards show a "View Browser" button that opens the Browserbase live view URL in a new tab.
 
 **Tab 2: Inbox Viewer**
+
 - Embedded view of the agent's AgentMail inbox.
 - Lists messages with sender, subject, date, snippet.
 - Click to expand and see full message body.
 - "Refresh" button to re-poll the inbox.
 
 **Tab 3: Credentials Vault**
+
 - Table of platform credentials with columns: Platform, Email, Password (masked), API Key (if any), Actions.
 - "Reveal" button (eye icon) to unmask a password (logs the access to audit_log).
 - "Copy" button to copy a credential to clipboard.
 
 **Tab 4: Activity Log**
+
 - Chronological list of all SSE events received for this agent.
 - Useful for debugging and understanding the automation timeline.
 
@@ -1851,6 +1813,7 @@ src/components/
 ```
 
 **Key Settings:**
+
 - The SSE stream endpoint needs a long `maxDuration` (up to 300s on Pro/Enterprise plans) to keep connections alive.
 - The agent creation endpoint needs at least 60s for the initial Vault writes and AgentMail inbox creation.
 
@@ -1890,8 +1853,8 @@ const nextConfig: NextConfig = {
   // Enable experimental features
   experimental: {
     // Optimize serverless function size
-    optimizePackageImports: ['lucide-react', '@neondatabase/auth'],
-  },
+    optimizePackageImports: ['lucide-react', '@neondatabase/auth']
+  }
 };
 
 export default nextConfig;
@@ -1951,89 +1914,89 @@ Given the 24-hour hackathon constraint, here is the recommended implementation o
 
 ### Phase 0: Setup (Hours 0-1)
 
-| Task | Time | Priority |
-|---|---|---|
-| Scaffold Next.js 16 project with bun | 10 min | P0 |
-| Install all dependencies | 10 min | P0 |
-| Configure TypeScript, ESLint | 5 min | P0 |
-| Set up Shadcn UI (init + add components) | 10 min | P0 |
-| Create Neon database + enable Neon Auth | 10 min | P0 |
-| Configure environment variables | 5 min | P0 |
-| Deploy initial skeleton to Vercel | 10 min | P0 |
+| Task                                     | Time   | Priority |
+| ---------------------------------------- | ------ | -------- |
+| Scaffold Next.js 16 project with bun     | 10 min | P0       |
+| Install all dependencies                 | 10 min | P0       |
+| Configure TypeScript, ESLint             | 5 min  | P0       |
+| Set up Shadcn UI (init + add components) | 10 min | P0       |
+| Create Neon database + enable Neon Auth  | 10 min | P0       |
+| Configure environment variables          | 5 min  | P0       |
+| Deploy initial skeleton to Vercel        | 10 min | P0       |
 
 ### Phase 1: Auth & Database (Hours 1-3)
 
-| Task | Time | Priority |
-|---|---|---|
-| Implement Neon Auth (API route, middleware, provider, pages) | 30 min | P0 |
-| Define Drizzle schema and push to Neon | 20 min | P0 |
-| Create DB client module | 10 min | P0 |
-| Verify sign-up/sign-in flow works end-to-end | 15 min | P0 |
-| Create dashboard layout with Shadcn Sidebar | 30 min | P0 |
-| Implement basic agent list page (empty state) | 15 min | P0 |
+| Task                                                         | Time   | Priority |
+| ------------------------------------------------------------ | ------ | -------- |
+| Implement Neon Auth (API route, middleware, provider, pages) | 30 min | P0       |
+| Define Drizzle schema and push to Neon                       | 20 min | P0       |
+| Create DB client module                                      | 10 min | P0       |
+| Verify sign-up/sign-in flow works end-to-end                 | 15 min | P0       |
+| Create dashboard layout with Shadcn Sidebar                  | 30 min | P0       |
+| Implement basic agent list page (empty state)                | 15 min | P0       |
 
 ### Phase 2: Core Backend (Hours 3-7)
 
-| Task | Time | Priority |
-|---|---|---|
-| Implement AgentMail module (create inbox, poll, extract OTP) | 45 min | P0 |
-| Implement Vault module (generate password, store, retrieve) | 30 min | P0 |
-| Implement Browserbase module (create session, signup, screenshot) | 45 min | P0 |
-| Implement `POST /api/agents` route | 30 min | P0 |
-| Implement SSE stream endpoint | 30 min | P0 |
-| Implement event emitter module | 15 min | P0 |
-| Implement orchestrator (non-AI: deterministic flows only) | 45 min | P0 |
+| Task                                                              | Time   | Priority |
+| ----------------------------------------------------------------- | ------ | -------- |
+| Implement AgentMail module (create inbox, poll, extract OTP)      | 45 min | P0       |
+| Implement Vault module (generate password, store, retrieve)       | 30 min | P0       |
+| Implement Browserbase module (create session, signup, screenshot) | 45 min | P0       |
+| Implement `POST /api/agents` route                                | 30 min | P0       |
+| Implement SSE stream endpoint                                     | 30 min | P0       |
+| Implement event emitter module                                    | 15 min | P0       |
+| Implement orchestrator (non-AI: deterministic flows only)         | 45 min | P0       |
 
 ### Phase 3: Frontend Core (Hours 7-11)
 
-| Task | Time | Priority |
-|---|---|---|
-| Create Agent form (name input + submit) | 30 min | P0 |
-| Agent detail page with tabs skeleton | 30 min | P0 |
-| Status Dashboard tab (6 platform cards with SSE) | 60 min | P0 |
-| Credentials Vault tab (table with mask/copy) | 45 min | P0 |
-| Inbox Viewer tab (message list) | 30 min | P1 |
-| Activity Log tab | 15 min | P1 |
-| `useTaskStream` hook | 20 min | P0 |
+| Task                                             | Time   | Priority |
+| ------------------------------------------------ | ------ | -------- |
+| Create Agent form (name input + submit)          | 30 min | P0       |
+| Agent detail page with tabs skeleton             | 30 min | P0       |
+| Status Dashboard tab (6 platform cards with SSE) | 60 min | P0       |
+| Credentials Vault tab (table with mask/copy)     | 45 min | P0       |
+| Inbox Viewer tab (message list)                  | 30 min | P1       |
+| Activity Log tab                                 | 15 min | P1       |
+| `useTaskStream` hook                             | 20 min | P0       |
 
 ### Phase 4: AI Layer (Hours 11-15)
 
-| Task | Time | Priority |
-|---|---|---|
-| Configure Claude Opus 4.6 with extended thinking | 15 min | P1 |
-| Implement AI-guided recovery function | 60 min | P1 |
-| Test AI recovery with screenshot analysis | 45 min | P1 |
-| Integrate AI decisions into orchestrator flow | 45 min | P1 |
-| Handle multi-turn AI interaction (fill → screenshot → decide) | 60 min | P1 |
+| Task                                                          | Time   | Priority |
+| ------------------------------------------------------------- | ------ | -------- |
+| Configure Claude Opus 4.6 with extended thinking              | 15 min | P1       |
+| Implement AI-guided recovery function                         | 60 min | P1       |
+| Test AI recovery with screenshot analysis                     | 45 min | P1       |
+| Integrate AI decisions into orchestrator flow                 | 45 min | P1       |
+| Handle multi-turn AI interaction (fill → screenshot → decide) | 60 min | P1       |
 
 ### Phase 5: Landing Page & Polish (Hours 15-19)
 
-| Task | Time | Priority |
-|---|---|---|
-| Landing page hero section with animations | 60 min | P0 |
-| Platform grid and "How It Works" sections | 30 min | P0 |
-| Dark theme polish across all pages | 30 min | P1 |
-| Loading states (Skeleton components) | 20 min | P1 |
-| Error states and edge cases | 30 min | P1 |
-| Responsive design pass (mobile breakpoints) | 30 min | P2 |
+| Task                                        | Time   | Priority |
+| ------------------------------------------- | ------ | -------- |
+| Landing page hero section with animations   | 60 min | P0       |
+| Platform grid and "How It Works" sections   | 30 min | P0       |
+| Dark theme polish across all pages          | 30 min | P1       |
+| Loading states (Skeleton components)        | 20 min | P1       |
+| Error states and edge cases                 | 30 min | P1       |
+| Responsive design pass (mobile breakpoints) | 30 min | P2       |
 
 ### Phase 6: Integration Testing & Demo Prep (Hours 19-23)
 
-| Task | Time | Priority |
-|---|---|---|
-| End-to-end test: create agent → Vercel signup → verify → complete | 60 min | P0 |
-| End-to-end test: Sentry signup flow | 30 min | P0 |
-| Fix bugs from integration testing | 60 min | P0 |
-| Sentry error tracking verification | 15 min | P1 |
-| Prepare demo script and talking points | 30 min | P0 |
-| Final production deploy | 15 min | P0 |
+| Task                                                              | Time   | Priority |
+| ----------------------------------------------------------------- | ------ | -------- |
+| End-to-end test: create agent → Vercel signup → verify → complete | 60 min | P0       |
+| End-to-end test: Sentry signup flow                               | 30 min | P0       |
+| Fix bugs from integration testing                                 | 60 min | P0       |
+| Sentry error tracking verification                                | 15 min | P1       |
+| Prepare demo script and talking points                            | 30 min | P0       |
+| Final production deploy                                           | 15 min | P0       |
 
 ### Phase 7: Buffer (Hour 23-24)
 
-| Task | Time | Priority |
-|---|---|---|
-| Last-minute bug fixes | 30 min | P0 |
-| Demo dry run | 30 min | P0 |
+| Task                  | Time   | Priority |
+| --------------------- | ------ | -------- |
+| Last-minute bug fixes | 30 min | P0       |
+| Demo dry run          | 30 min | P0       |
 
 ---
 
@@ -2148,17 +2111,17 @@ spawnpoint/
 
 ## 20. Risk Matrix & Mitigations
 
-| Risk | Likelihood | Impact | Mitigation |
-|---|---|---|---|
-| **Browserbase rate limits / session failures** | Medium | High | Implement retry logic with exponential backoff. Fall back to local Playwright if Browserbase is down. |
-| **Platform signup forms change during hackathon** | Low | High | AI-guided recovery with Claude screenshot analysis. Keep selectors configurable. |
-| **AgentMail inbox creation fails** | Low | Critical | Validate API key on startup. Have a fallback email provider (or hardcoded test inbox). |
-| **Vault unavailable** | Medium | High | Hackathon fallback: store encrypted credentials directly in Neon using `pgcrypto`. |
-| **SSE doesn't work across serverless instances** | High | Medium | Accept limitation for demo. Use polling as fallback. Post-hackathon: Redis pub/sub. |
-| **CAPTCHAs on all social platforms** | High | Medium | Scope MVP to non-CAPTCHA platforms (Vercel, Sentry, Mintlify). Show manual-assist for social. |
-| **Vercel function timeout (10s on Hobby plan)** | Medium | High | Use Pro plan (60s default, 300s max). Break long-running tasks into background jobs. |
-| **Neon Auth SDK compatibility with Next.js 16** | Low | High | Test early in Phase 1. Fall back to vanilla Better Auth if SDK has issues. |
-| **AI orchestrator token costs exceed budget** | Medium | Low | Set `maxTokens` limits. Use Claude Sonnet 4.5 for non-critical decisions, Opus only for recovery. |
+| Risk                                              | Likelihood | Impact   | Mitigation                                                                                            |
+| ------------------------------------------------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| **Browserbase rate limits / session failures**    | Medium     | High     | Implement retry logic with exponential backoff. Fall back to local Playwright if Browserbase is down. |
+| **Platform signup forms change during hackathon** | Low        | High     | AI-guided recovery with Claude screenshot analysis. Keep selectors configurable.                      |
+| **AgentMail inbox creation fails**                | Low        | Critical | Validate API key on startup. Have a fallback email provider (or hardcoded test inbox).                |
+| **Vault unavailable**                             | Medium     | High     | Hackathon fallback: store encrypted credentials directly in Neon using `pgcrypto`.                    |
+| **SSE doesn't work across serverless instances**  | High       | Medium   | Accept limitation for demo. Use polling as fallback. Post-hackathon: Redis pub/sub.                   |
+| **CAPTCHAs on all social platforms**              | High       | Medium   | Scope MVP to non-CAPTCHA platforms (Vercel, Sentry, Mintlify). Show manual-assist for social.         |
+| **Vercel function timeout (10s on Hobby plan)**   | Medium     | High     | Use Pro plan (60s default, 300s max). Break long-running tasks into background jobs.                  |
+| **Neon Auth SDK compatibility with Next.js 16**   | Low        | High     | Test early in Phase 1. Fall back to vanilla Better Auth if SDK has issues.                            |
+| **AI orchestrator token costs exceed budget**     | Medium     | Low      | Set `maxTokens` limits. Use Claude Sonnet 4.5 for non-critical decisions, Opus only for recovery.     |
 
 ---
 
@@ -2188,36 +2151,36 @@ Given the hackathon time constraint, prioritize manual integration testing over 
 
 ## 22. Post-Hackathon Roadmap
 
-| Priority | Feature | Description |
-|---|---|---|
-| P0 | **Redis Pub/Sub for SSE** | Replace in-process EventEmitter with Upstash Redis for multi-instance support. |
-| P0 | **Webhook-based email processing** | Replace AgentMail polling with webhooks for instant verification handling. |
-| P0 | **Background job queue** | Use Vercel Cron Jobs or Inngest for long-running signup tasks. |
-| P1 | **LinkedIn & CodeRabbit** | Add remaining platforms from the original spec. |
-| P1 | **GitHub org auto-provisioning** | Use GitHub API to create repos and set up team access. |
-| P1 | **Neon DB per-agent provisioning** | Auto-create a Neon database branch per agent. |
-| P2 | **CAPTCHA solving service** | Integrate with 2Captcha or CapSolver for automated CAPTCHA resolution. |
-| P2 | **noVNC live browser embed** | Embed the Browserbase live view directly in the dashboard (instead of opening a new tab). |
-| P2 | **Multi-tenant support** | Allow multiple organizations with isolated agent pools. |
-| P3 | **Agent lifecycle management** | Deactivation, credential rotation, and account deletion flows. |
+| Priority | Feature                            | Description                                                                               |
+| -------- | ---------------------------------- | ----------------------------------------------------------------------------------------- |
+| P0       | **Redis Pub/Sub for SSE**          | Replace in-process EventEmitter with Upstash Redis for multi-instance support.            |
+| P0       | **Webhook-based email processing** | Replace AgentMail polling with webhooks for instant verification handling.                |
+| P0       | **Background job queue**           | Use Vercel Cron Jobs or Inngest for long-running signup tasks.                            |
+| P1       | **LinkedIn & CodeRabbit**          | Add remaining platforms from the original spec.                                           |
+| P1       | **GitHub org auto-provisioning**   | Use GitHub API to create repos and set up team access.                                    |
+| P1       | **Neon DB per-agent provisioning** | Auto-create a Neon database branch per agent.                                             |
+| P2       | **CAPTCHA solving service**        | Integrate with 2Captcha or CapSolver for automated CAPTCHA resolution.                    |
+| P2       | **noVNC live browser embed**       | Embed the Browserbase live view directly in the dashboard (instead of opening a new tab). |
+| P2       | **Multi-tenant support**           | Allow multiple organizations with isolated agent pools.                                   |
+| P3       | **Agent lifecycle management**     | Deactivation, credential rotation, and account deletion flows.                            |
 
 ---
 
 ## Appendix A: Key API References
 
-| Service | Documentation URL |
-|---|---|
-| Next.js 16 | https://nextjs.org/docs |
-| Shadcn UI | https://ui.shadcn.com/docs |
-| Vercel AI SDK v6 | https://ai-sdk.dev/docs |
-| AI SDK Anthropic Provider | https://ai-sdk.dev/providers/ai-sdk-providers/anthropic |
-| Neon Auth (Better Auth) | https://neon.com/docs/auth/quick-start/nextjs |
-| AgentMail | https://docs.agentmail.to/ |
-| Browserbase + Playwright | https://docs.browserbase.com/introduction/playwright |
-| HashiCorp Vault KV v2 | https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2 |
-| Sentry Next.js | https://docs.sentry.io/platforms/javascript/guides/nextjs/ |
-| Bun | https://bun.sh/docs |
-| Drizzle ORM | https://orm.drizzle.team/docs/overview |
+| Service                   | Documentation URL                                           |
+| ------------------------- | ----------------------------------------------------------- |
+| Next.js 16                | https://nextjs.org/docs                                     |
+| Shadcn UI                 | https://ui.shadcn.com/docs                                  |
+| Vercel AI SDK v6          | https://ai-sdk.dev/docs                                     |
+| AI SDK Anthropic Provider | https://ai-sdk.dev/providers/ai-sdk-providers/anthropic     |
+| Neon Auth (Better Auth)   | https://neon.com/docs/auth/quick-start/nextjs               |
+| AgentMail                 | https://docs.agentmail.to/                                  |
+| Browserbase + Playwright  | https://docs.browserbase.com/introduction/playwright        |
+| HashiCorp Vault KV v2     | https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2 |
+| Sentry Next.js            | https://docs.sentry.io/platforms/javascript/guides/nextjs/  |
+| Bun                       | https://bun.sh/docs                                         |
+| Drizzle ORM               | https://orm.drizzle.team/docs/overview                      |
 
 ---
 
@@ -2244,4 +2207,4 @@ Given the hackathon time constraint, prioritize manual integration testing over 
 
 ---
 
-*End of specification. This document should be treated as a living artifact — update it as implementation decisions are made during the hackathon.*
+_End of specification. This document should be treated as a living artifact — update it as implementation decisions are made during the hackathon._

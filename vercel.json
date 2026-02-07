@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "bun run build",
+  "installCommand": "bun install",
+  "functions": {
+    "src/app/api/agents/[agentId]/stream/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/agents/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}

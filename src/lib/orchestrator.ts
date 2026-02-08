@@ -2,7 +2,7 @@ import { generateText, Output } from 'ai';
 import { anthropic } from '@ai-sdk/anthropic';
 import { z } from 'zod';
 import { db } from '@/db';
-import { setupTasks } from '@/db/schema';
+import { agents, setupTasks } from '@/db/schema';
 import { and, eq } from 'drizzle-orm';
 import { PLATFORM_CONFIGS } from '@/lib/platforms';
 import { createBrowserSession, performSignup, injectOTP, takeScreenshot, getSessionLiveViewUrl } from '@/lib/browser';
@@ -170,6 +170,85 @@ async function executePlatformSignup(
       message: `${platform} signup completed successfully!`,
       timestamp: new Date().toISOString()
     });
+
+    // Post-signup: connect the Instagram account to Composio, then publish first post
+    if (platform === 'instagram') {
+      try {
+        const { connectInstagramAccount, publishFirstPost } = await import('@/lib/composio');
+        const { getCredential } = await import('@/lib/vault');
+
+        const [agent] = await db.select({ name: agents.name }).from(agents).where(eq(agents.id, agentId)).limit(1);
+
+        const agentName = agent?.name ?? agentId;
+
+        // Retrieve the credentials saved during signup
+        const creds = await getCredential(agentId, 'instagram');
+        if (!creds) {
+          console.error('[instagram] No credentials found after signup — skipping post');
+        } else {
+          // Step 1: Connect the account to Composio
+          emitTaskUpdate({
+            taskId: task?.id ?? '',
+            agentId,
+            platform,
+            status: 'completed',
+            message: 'Connecting Instagram account to Composio...',
+            timestamp: new Date().toISOString()
+          });
+
+          const connectionResult = await connectInstagramAccount(creds.email, creds.password, agentId);
+
+          if (!connectionResult.success) {
+            console.error('[instagram] Composio connection failed:', connectionResult.error);
+            emitTaskUpdate({
+              taskId: task?.id ?? '',
+              agentId,
+              platform,
+              status: 'completed',
+              message: `Signup succeeded but Composio connection failed: ${connectionResult.error}`,
+              timestamp: new Date().toISOString()
+            });
+          } else {
+            // Step 2: Publish the first post
+            emitTaskUpdate({
+              taskId: task?.id ?? '',
+              agentId,
+              platform,
+              status: 'completed',
+              message: 'Creating first Instagram post...',
+              timestamp: new Date().toISOString()
+            });
+
+            const postResult = await publishFirstPost(agentName, agentId);
+
+            if (postResult.success) {
+              emitTaskUpdate({
+                taskId: task?.id ?? '',
+                agentId,
+                platform,
+                status: 'completed',
+                message: 'First Instagram post published! 🎉',
+                timestamp: new Date().toISOString()
+              });
+            } else {
+              console.error('[instagram] First post failed:', postResult.error);
+              emitTaskUpdate({
+                taskId: task?.id ?? '',
+                agentId,
+                platform,
+                status: 'completed',
+                message: `Signup succeeded but first post failed: ${postResult.error}`,
+                timestamp: new Date().toISOString()
+              });
+            }
+          }
+        }
+      } catch (postErr) {
+        const postErrMsg = postErr instanceof Error ? postErr.message : 'Unknown error';
+        console.error('[instagram] First post error:', postErrMsg);
+        // Non-fatal — signup still succeeded, don't change status
+      }
+    }
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
     console.error(`[${platform}] Signup failed:`, errorMsg);

@@ -2,7 +2,7 @@
 
 Single-click AI Agent onboarding with no friction. Automate account creation across multiple platforms for your AI agents.
 
-Built for the **BetterHack Hackathon @ YC**.
+Built for the **Better Hack Hackathon @ YC**.
 
 ## What it does
 

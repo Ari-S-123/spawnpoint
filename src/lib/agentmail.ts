@@ -21,7 +21,7 @@ export async function deleteInbox(inboxId: string): Promise<void> {
 export async function waitForVerification(
   inboxId: string,
   platform: string,
-  maxAttempts = 30
+  maxAttempts = 40
 ): Promise<{ type: 'otp'; value: string } | { type: 'link'; value: string }> {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const response = await client.inboxes.messages.list(inboxId);

@@ -48,7 +48,7 @@ export async function performSignup(
   password: string
 ): Promise<'completed' | 'captcha'> {
   await page.goto(config.signupUrl, {
-    timeout: 30_000,
+    timeout: 120_000,
     waitUntil: 'domcontentloaded'
   });
 
@@ -59,7 +59,7 @@ export async function performSignup(
     return 'captcha';
   }
 
-  await page.waitForSelector(config.selectors.emailInput, { timeout: 10_000 });
+  await page.waitForSelector(config.selectors.emailInput, { timeout: 120_000 });
   await page.fill(config.selectors.emailInput, email);
   await page.fill(config.selectors.passwordInput, password);
   await page.click(config.selectors.submitButton);
@@ -79,7 +79,7 @@ export async function injectOTP(
   otp: string,
   selector = 'input[name="code"], input[name="confirmationCode"], input[name="otp"], input[type="tel"]'
 ): Promise<void> {
-  await page.waitForSelector(selector, { timeout: 10_000 });
+  await page.waitForSelector(selector, { timeout: 120_000 });
   await page.fill(selector, otp);
 
   const verifyButton = await page.$(

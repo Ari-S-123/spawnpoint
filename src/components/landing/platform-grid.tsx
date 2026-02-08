@@ -86,7 +86,7 @@ export function PlatformGrid() {
           className="mb-16 text-center font-serif text-3xl font-light text-zinc-200 md:text-4xl"
           style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
         >
-          Five platforms. One workflow.
+          Multiple platforms. One workflow.
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

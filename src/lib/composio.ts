@@ -167,6 +167,17 @@ export async function getIntegration(agentId: string, integrationId: string) {
   return row ?? null;
 }
 
+// Auth-related parameter names that Composio auto-resolves from the connected account
+const AUTH_PARAMS_TO_STRIP = new Set([
+  'ig_user_id',
+  'user_id',
+  'account_id',
+  'business_account_id',
+  'page_id',
+  'owner_id',
+  'actor_id'
+]);
+
 export async function getComposioTools(agentId: string, apps?: string[]) {
   const rows = await db
     .select()
@@ -181,22 +192,90 @@ export async function getComposioTools(agentId: string, apps?: string[]) {
     filterImportantActions: true
   });
 
-  return (result.items ?? []).map((a) => ({
-    name: a.name,
-    displayName: a.displayName,
-    description: a.description,
-    appName: a.appName,
-    tags: a.tags,
-    parameters: a.parameters
-  }));
+  return (result.items ?? []).map((a) => {
+    // Strip auth-related params from the schema so AI doesn't try to fill them
+    let cleanedParams = a.parameters as Record<string, unknown> | undefined;
+    if (cleanedParams?.properties) {
+      const props = { ...(cleanedParams.properties as Record<string, unknown>) };
+      const required = Array.isArray(cleanedParams.required)
+        ? (cleanedParams.required as string[]).filter((r) => !AUTH_PARAMS_TO_STRIP.has(r))
+        : [];
+      for (const key of AUTH_PARAMS_TO_STRIP) {
+        delete props[key];
+      }
+      cleanedParams = { ...cleanedParams, properties: props, required };
+    }
+
+    return {
+      name: a.name,
+      displayName: a.displayName,
+      description: a.description,
+      appName: a.appName,
+      tags: a.tags,
+      parameters: cleanedParams
+    };
+  });
 }
 
 export async function executeComposioTool(agentId: string, actionName: string, args: Record<string, unknown>) {
   const entity = getClient().getEntity(agentId);
 
+  // Filter out empty strings, null, and undefined so Composio uses defaults
+  const filteredArgs = Object.fromEntries(
+    Object.entries(args).filter(([, v]) => v !== '' && v !== null && v !== undefined)
+  );
+
+  // Extract app name from action (e.g., INSTAGRAM_CREATE_MEDIA_CONTAINER -> instagram)
+  const appPrefix = actionName.split('_')[0]?.toLowerCase();
+
+  // Look up connectedAccountId from our integrations table
+  let connectedAccountId: string | undefined;
+  if (appPrefix) {
+    const [integration] = await db
+      .select()
+      .from(integrations)
+      .where(
+        and(
+          eq(integrations.agentId, agentId),
+          eq(integrations.app, appPrefix as ComposioApp),
+          eq(integrations.status, 'connected')
+        )
+      )
+      .limit(1);
+
+    if (integration?.connectedAccountId) {
+      connectedAccountId = integration.connectedAccountId;
+    }
+  }
+
+  // Auto-inject ig_user_id for Instagram actions that need it
+  if (appPrefix === 'instagram' && !filteredArgs.ig_user_id && connectedAccountId) {
+    console.log(`[composio] Fetching ig_user_id for Instagram action...`);
+    try {
+      const userInfoResult = (await entity.execute({
+        actionName: 'INSTAGRAM_GET_USER_INFO',
+        params: {},
+        connectedAccountId
+      })) as { data?: { id?: string }; successful?: boolean };
+
+      if (userInfoResult.successful && userInfoResult.data?.id) {
+        filteredArgs.ig_user_id = userInfoResult.data.id;
+        console.log(`[composio] Auto-injected ig_user_id: ${userInfoResult.data.id}`);
+      }
+    } catch (err) {
+      console.warn(`[composio] Failed to auto-fetch ig_user_id:`, err);
+    }
+  }
+
+  console.log(
+    `[composio] executeComposioTool: action=${actionName}, connectedAccountId=${connectedAccountId}, args=`,
+    filteredArgs
+  );
+
   const result = await entity.execute({
     actionName,
-    params: args
+    params: filteredArgs,
+    connectedAccountId
   });
 
   return result;

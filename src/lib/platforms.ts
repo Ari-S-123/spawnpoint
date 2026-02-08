@@ -9,7 +9,7 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       'Sign up for a Vercel account. You should see a signup page. Do the following steps:\n' +
       '1. Select the "Hobby" plan (toggle for personal projects)\n' +
       '2. Type the provided name into the name field\n' +
-      '3. Click "Continue with Email" to choose email sign-in\n' +
+      '3. IMPORTANT: Click "Continue with Email" — do NOT use GitHub/GitLab/Bitbucket. You MUST click the "Sign in with Email" or "Continue with Email" link/button to proceed with email-based signup.\n' +
       '4. Type the provided email into the email field\n' +
       '5. Click the Continue/Submit button to send the verification code\n' +
       'Stop when the page says a verification email has been sent or asks for a code.',

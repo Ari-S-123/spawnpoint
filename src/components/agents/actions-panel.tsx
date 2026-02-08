@@ -89,17 +89,35 @@ type StepStartPart = {
 
 type MessagePart = ToolInvocationPart | TextPart | ReasoningPart | StepStartPart | { type: string };
 
-function extractToolInvocations(messages: { parts?: MessagePart[] }[]) {
-  const invocations: ToolInvocationPart['toolInvocation'][] = [];
+type ActivityEntry =
+  | { kind: 'reasoning'; text: string; id: string }
+  | { kind: 'tool'; invocation: ToolInvocationPart['toolInvocation']; id: string }
+  | { kind: 'step'; stepNumber: number; id: string };
+
+function extractActivityFeed(messages: { parts?: MessagePart[] }[]): ActivityEntry[] {
+  const entries: ActivityEntry[] = [];
+  let stepCounter = 0;
   for (const msg of messages) {
     if (!msg.parts) continue;
-    for (const part of msg.parts) {
-      if (part.type === 'tool-invocation') {
-        invocations.push((part as ToolInvocationPart).toolInvocation);
+    for (let i = 0; i < msg.parts.length; i++) {
+      const part = msg.parts[i]!;
+      if (part.type === 'step-start') {
+        stepCounter++;
+        if (stepCounter > 1) {
+          entries.push({ kind: 'step', stepNumber: stepCounter, id: `step-${stepCounter}` });
+        }
+      } else if (part.type === 'reasoning') {
+        const rp = part as ReasoningPart;
+        if (rp.reasoning?.trim()) {
+          entries.push({ kind: 'reasoning', text: rp.reasoning, id: `reason-${entries.length}` });
+        }
+      } else if (part.type === 'tool-invocation') {
+        const tp = part as ToolInvocationPart;
+        entries.push({ kind: 'tool', invocation: tp.toolInvocation, id: tp.toolInvocation.toolCallId });
       }
     }
   }
-  return invocations;
+  return entries;
 }
 
 function toolDisplayName(name: string) {
@@ -136,12 +154,18 @@ function toolKeyArg(inv: ToolInvocationPart['toolInvocation']): string | null {
 /* ── ThinkingBlock ───────────────────────────────────────── */
 
 function ThinkingBlock({ text, isStreaming }: { text: string; isStreaming: boolean }) {
-  const [expanded, setExpanded] = useState(false);
+  // When streaming, always show expanded; user can only toggle when not streaming
+  const [manualExpanded, setManualExpanded] = useState(false);
+  const expanded = isStreaming || manualExpanded;
+
+  const previewText = text.length > 120 ? text.slice(0, 120) + '...' : text;
 
   return (
-    <div className="my-2 rounded-lg border border-amber-500/20 bg-amber-500/5">
+    <div
+      className={`my-2 rounded-lg border border-amber-500/20 bg-amber-500/5 ${isStreaming ? 'ring-1 ring-amber-500/30' : ''}`}
+    >
       <button
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => setManualExpanded(!manualExpanded)}
         className="flex w-full items-center gap-2 px-3 py-2 text-xs text-amber-400/80 transition-colors hover:text-amber-300"
       >
         {isStreaming ? (
@@ -150,11 +174,21 @@ function ThinkingBlock({ text, isStreaming }: { text: string; isStreaming: boole
           <Brain className="h-3.5 w-3.5 text-amber-400" />
         )}
         <span className="font-medium">{isStreaming ? 'Thinking...' : 'Reasoning'}</span>
-        {expanded ? <ChevronDown className="ml-auto h-3 w-3" /> : <ChevronRight className="ml-auto h-3 w-3" />}
+        {!expanded && text && (
+          <span className="ml-1 max-w-[300px] truncate font-normal text-amber-400/50">{previewText}</span>
+        )}
+        {expanded ? (
+          <ChevronDown className="ml-auto h-3 w-3 shrink-0" />
+        ) : (
+          <ChevronRight className="ml-auto h-3 w-3 shrink-0" />
+        )}
       </button>
       {expanded && (
         <div className="border-t border-amber-500/10 px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
           {text}
+          {isStreaming && (
+            <span className="ml-0.5 inline-block h-3 w-1.5 animate-pulse bg-amber-400/60 align-text-bottom" />
+          )}
         </div>
       )}
     </div>
@@ -169,7 +203,9 @@ function InlineToolCard({ invocation }: { invocation: ToolInvocationPart['toolIn
   const isRunning = invocation.state !== 'result';
 
   return (
-    <div className="my-1.5 rounded-lg border bg-muted/30">
+    <div
+      className={`my-1.5 rounded-lg border bg-muted/30 ${isRunning ? 'border-blue-500/30 ring-1 ring-blue-500/10' : ''}`}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-muted/50"
@@ -354,8 +390,8 @@ export function ActionsPanel({ agentId }: { agentId?: string }) {
     }
   }, [messages]);
 
-  const toolInvocations = extractToolInvocations(messages);
-  const hasToolActivity = toolInvocations.length > 0;
+  const activityFeed = useMemo(() => extractActivityFeed(messages), [messages]);
+  const hasActivity = activityFeed.length > 0;
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -495,17 +531,47 @@ export function ActionsPanel({ agentId }: { agentId?: string }) {
         </div>
       </div>
 
-      {/* Right -- Tool Activity sidebar */}
-      {hasToolActivity && (
+      {/* Right -- Live Activity Feed sidebar */}
+      {hasActivity && (
         <div className="w-80 border-l">
-          <div className="border-b p-3">
-            <h3 className="text-xs font-medium text-muted-foreground">Tool Activity</h3>
+          <div className="flex items-center gap-2 border-b p-3">
+            {isLoading && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+            <h3 className="text-xs font-medium text-muted-foreground">Activity Feed</h3>
+            <span className="text-[10px] text-muted-foreground/60">{activityFeed.length} events</span>
           </div>
           <ScrollArea className="h-[calc(100%-2.5rem)]">
-            <div className="space-y-2 p-3">
-              {toolInvocations.map((inv) => (
-                <ToolActivityCard key={inv.toolCallId} invocation={inv} />
-              ))}
+            <div className="p-3">
+              {activityFeed.map((entry) => {
+                if (entry.kind === 'step') {
+                  return (
+                    <div key={entry.id} className="flex items-center gap-2 py-2">
+                      <div className="flex-1 border-t border-border/30" />
+                      <span className="text-[9px] font-medium tracking-widest text-muted-foreground/60 uppercase">
+                        Step {entry.stepNumber}
+                      </span>
+                      <div className="flex-1 border-t border-border/30" />
+                    </div>
+                  );
+                }
+
+                if (entry.kind === 'reasoning') {
+                  return (
+                    <div key={entry.id} className="flex gap-2 py-1.5">
+                      <div className="mt-0.5 flex flex-col items-center">
+                        <Brain className="h-3 w-3 text-amber-400/70" />
+                        <div className="mt-1 w-px flex-1 bg-border/30" />
+                      </div>
+                      <p className="line-clamp-3 text-[11px] leading-relaxed text-muted-foreground">{entry.text}</p>
+                    </div>
+                  );
+                }
+
+                if (entry.kind === 'tool') {
+                  return <ToolActivityCard key={entry.id} invocation={entry.invocation} />;
+                }
+
+                return null;
+              })}
             </div>
           </ScrollArea>
         </div>

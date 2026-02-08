@@ -207,7 +207,7 @@ import { anthropic } from '@ai-sdk/anthropic';
 import { z } from 'zod';
 
 const { output } = await generateText({
-  model: anthropic('claude-opus-4-6-20250414'),
+  model: anthropic('claude-opus-4-6'),
   output: Output.object({
     schema: z.object({
       action: z.enum(['fill_form', 'click_button', 'extract_otp', 'screenshot']),
@@ -221,13 +221,13 @@ const { output } = await generateText({
 
 **Claude Opus 4.6 Configuration:**
 
-- Model ID: `claude-opus-4-6-20250414` (use the exact model string from the Anthropic provider)
+- Model ID: `claude-opus-4-6` (use the exact model string from the Anthropic provider)
 - Extended Thinking: Enabled via `providerOptions.anthropic.thinking.type: 'enabled'`
 - Budget Tokens: Set `budgetTokens` for thinking depth control (e.g., `10000` for "high" thinking)
 
 ```typescript
 const result = await generateText({
-  model: anthropic('claude-opus-4-6-20250414'),
+  model: anthropic('claude-opus-4-6'),
   providerOptions: {
     anthropic: {
       thinking: {
@@ -1330,7 +1330,7 @@ import type { Platform } from '@/types';
 /**
  * The Claude model instance configured with extended thinking.
  */
-const model = anthropic('claude-opus-4-6-20250414');
+const model = anthropic('claude-opus-4-6');
 
 /**
  * Schema for the AI's next-action decision.

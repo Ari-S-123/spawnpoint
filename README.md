@@ -1,6 +1,6 @@
 # SpawnPoint
 
-Single-click AI Agent onboarding with no friction. Automate account creation across 6 platforms for your AI agents.
+Single-click AI Agent onboarding with no friction. Automate account creation across multiple platforms for your AI agents.
 
 Built for the **BetterHack Hackathon @ YC**.
 

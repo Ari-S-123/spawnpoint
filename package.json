@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "composio-core": "^0.5.39",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
     "input-otp": "^1.4.2",

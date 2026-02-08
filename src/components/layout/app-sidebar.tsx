@@ -20,7 +20,7 @@ import {
 
 const navItems = [
   { title: 'Agents', href: '/dashboard', icon: Bot, matchPrefix: '/dashboard' },
-  { title: 'Settings', href: '/account/settings', icon: Settings, matchPrefix: '/account/settings' }
+  { title: 'Settings', href: '/dashboard/settings', icon: Settings, matchPrefix: '/dashboard/settings' }
 ];
 
 export function AppSidebar() {

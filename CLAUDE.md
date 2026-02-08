@@ -57,6 +57,7 @@ Key constraint: DB updates in the orchestrator must filter by BOTH `agentId` AND
 | `src/lib/agentmail.ts`    | Inbox creation, email polling, OTP extraction               |
 | `src/lib/vault.ts`        | Password generation + credential CRUD (Neon DB, not Vault)  |
 | `src/lib/platforms.ts`    | Platform configs: signup URLs, CSS selectors, CAPTCHA flags |
+| `src/lib/composio.ts`     | Composio SDK wrapper for Instagram posting via API          |
 | `src/lib/events.ts`       | EventEmitter singleton for SSE task updates                 |
 
 ### Frontend
@@ -78,4 +79,4 @@ Key constraint: DB updates in the orchestrator must filter by BOTH `agentId` AND
 
 ## Environment Variables
 
-Required in `.env.local`: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEXT_PUBLIC_NEON_AUTH_URL`, `NEON_AUTH_COOKIE_SECRET` (min 32 chars), `AGENTMAIL_API_KEY`, `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `ANTHROPIC_API_KEY`, `SENTRY_DSN`, `NEXT_PUBLIC_APP_URL`
+Required in `.env.local`: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEXT_PUBLIC_NEON_AUTH_URL`, `NEON_AUTH_COOKIE_SECRET` (min 32 chars), `AGENTMAIL_API_KEY`, `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `ANTHROPIC_API_KEY`, `COMPOSIO_API_KEY`, `SENTRY_DSN`, `NEXT_PUBLIC_APP_URL`

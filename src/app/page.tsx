@@ -76,7 +76,7 @@ export default function Home() {
           >
             Spawn<span className="text-amber-500/50">Point</span>
           </span>
-          <p className="text-xs text-zinc-600">Built for BetterHack @ YC &middot; 2025</p>
+          <p className="text-xs text-zinc-600">Built for BetterHack @ YC &middot; 2026</p>
         </div>
       </footer>
     </div>

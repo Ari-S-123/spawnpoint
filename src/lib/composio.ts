@@ -54,7 +54,7 @@ export async function connectInstagramAccount(
   }
 }
 
-const model = anthropic('claude-sonnet-4-20250514');
+const model = anthropic('claude-opus-4-6');
 
 /**
  * Uses AI to generate a compelling first-post caption for a new Instagram account.

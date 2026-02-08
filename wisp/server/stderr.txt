@@ -1,0 +1,7 @@
+[01/29/26 13:12:02] INFO     Logging system initialized with       server.py:347
+                             rotation, log file path:                           
+                             /Users/sbae703/.mcp/allvoicelab_mcp.l              
+                             og                                                 
+                    ERROR    ALLVOICELAB_API_KEY environment       server.py:359
+                             variable not set                                   
+2026-01-29 13:12:02,634 - root - ERROR - ALLVOICELAB_API_KEY environment variable not set

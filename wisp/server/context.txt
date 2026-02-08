@@ -1,0 +1,382 @@
+{
+  "mcpServers": {
+    "ip2locationio": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/ip2locationio/src",
+        "run",
+        "server.py"
+      ],
+      "env": {
+        "IP2LOCATION_API_KEY": "<YOUR API key HERE>"
+      }
+    }
+  }
+}
+
+
+🌐 Streamable HTTP (Hosted API Mode)
+
+{
+  "mcpServers": {
+    "Scrapeless MCP Server": {
+      "type": "streamable-http",
+      "url": "https://api.scrapeless.com/mcp",
+      "headers": {
+        "x-api-token": "YOUR_SCRAPELESS_KEY"
+      },
+      "disabled": false,
+      "alwaysAllow": []
+    }
+  }
+}
+
+npx allyson-mcp --api-key YOUR_API_KEY
+🔧 Configuration
+Command Line Options
+allyson-mcp [options]
+
+Options:
+  --api-key <key>     Your Allyson API key (required)
+  --help              Show help message
+
+Examples:
+  allyson-mcp --api-key your-api-key-here
+  API_KEY=your-key allyson-mcp
+Environment Variables
+You can also set your API key as an environment variable:
+
+export API_KEY=your-api-key-here
+allyson-mcp (note we will pass as ALLYSON_API_KEY)
+
+
+1. Install the MCP Server
+npm install -g @railsblueprint/blueprint-mcp
+2. Install the Browser Extension
+Choose your browser:
+
+Chrome / Edge / Opera
+
+Chrome Web Store (works for all Chromium browsers)
+Manual: Download from Releases, then load unpacked at chrome://extensions/ (Chrome), edge://extensions/ (Edge), or opera://extensions/ (Opera)
+Firefox
+
+Firefox Add-ons
+Manual: Download from Releases, then load at about:debugging#/runtime/this-firefox
+3. Configure your MCP client
+Claude Desktop (~/Library/Application Support/Claude/claude_desktop_config.json):
+
+{
+  "mcpServers": {
+    "browser": {
+      "command": "npx",
+      "args": ["@railsblueprint/blueprint-mcp@latest"]
+    }
+  }
+}
+
+🌠 Markdown to Mind Map: Convert Markdown text to interactive mind maps
+🖼️ Multi-format Export: Support for exporting as PNG, JPG, and SVG images
+🔄 Interactive Operations: Support for zooming, expanding/collapsing nodes, and other interactive features
+📋 Markdown Copy: One-click copy of the original Markdown content
+🌐 Automatic Browser Preview: Option to automatically open generated mind maps in the browser
+Prerequisites
+Node.js (v25)
+Installation
+Manual Installation
+# Install from npm
+npm install @isdmx/markmap-mcp-server -g
+
+# Basic run
+npx -y @isdmx/markmap-mcp-server
+
+# Specify output directory
+npx -y @isdmx/markmap-mcp-server --output /path/to/output/directory
+
+# Or
+markmap-mcp-server
+
+(new one we are adding)
+
+  "mcpServers": {
+    "octagon-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "octagon-mcp@latest"],
+      "env": {
+        "OCTAGON_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+
+pearch:
+Installing via Smithery
+To install mcp_pearch for Claude Desktop automatically via Smithery:
+
+npx -y @smithery/cli install @Pearch-ai/mcp_pearch --client claude
+Option 1: macOS[uv]
+# Install Python and uv
+brew install python
+brew install uv
+
+# Create and activate virtual environment
+uv venv
+source .venv/bin/activate
+
+# Install FastMCP
+uv pip install fastmcp
+Option 2: Linux[pip]
+# Install system dependencies
+sudo apt update
+sudo apt install python3 python3-venv python3-pip
+
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install FastMCP
+pip install fastmcp
+Usage
+Standard Installation
+fastmcp install pearch_mcp.py --name "Pearch.ai" --env-var PEARCH_API_KEY=pearch_mcp_key
+Development Mode
+For local development and testing:
+
+# Set your API key
+export PEARCH_API_KEY='your-api-key-here'
+
+# Start development server
+fastmcp dev pearch_mcp.py
+
+stdio MCP Server
+Full-featured MCP service that supports the deploy_folder tool for deploying full-stack projects.
+
+// Tencent Cloud International (Default)
+{
+  "mcpServers": {
+    "edgeone-pages-mcp-server": {
+      "timeout": 600,
+      "command": "npx",
+      "args": ["edgeone-pages-mcp-fullstack@latest"]
+    }
+  }
+}
+
+// Tencent Cloud China
+{
+  "mcpServers": {
+    "edgeone-pages-mcp-server": {
+      "timeout": 600,
+      "command": "npx",
+      "args": ["edgeone-pages-mcp-fullstack@latest", "--region", "china"]
+    }
+  }
+}
+
+Configure in Claude Desktop
+Edit ~/Library/Application Support/Claude/claude_desktop_config.json and add:
+
+{
+  "mcpServers": {
+    "2slides": {
+      "command": "npx",
+      "args": ["2slides-mcp"],
+      "env": {
+        "API_KEY": "YOUR_2SLIDES_API_KEY"
+      }
+    }
+  }
+}
+
+Installation & Setup
+Generic Client
+Several AI agents currently support the connection with MCP servers. Application Examples:
+
+Gemini CLI
+VS Code tab.
+Cursor Consult their documentation and use the following URL for connecting:
+ https://mcp.ferryhopper.com/mcp 
+Claude Desktop
+
+Step 1: choose your plan
+High-res PNG icons
+
+Free
+
+MCP server PNG icons in high resolution for quick prototyping and testing.
+
+{ "mcpServers": { "icons8mcp": { "command": "npx", "args": [ "mcp-remote", "https://mcp.icons8.com/mcp/" ] } } }
+
+Copy code to clipboard icon
+
+Copy code
+
+SVG icons
+
+API key required
+
+MCP server SVG available for paid users—subscribe for $15, then check the MCP tab in your account for the setup code
+
+{ "mcpServers": { "icons8mcp": { "command": "npx", "args": [ "mcp-remote", "https://mcp.icons8.com/mcp/", "--header", "Authorization:${AUTH_HEADER}" ], "env": { "AUTH_HEADER": "Bearer YOUR_API_KEY" } } } }
+
+Hosted MCP Server
+The urlDNA MCP server is already hosted and available at:
+
+https://mcp.urldna.io/sse
+This server is accessible over Server-Sent Events (SSE) protocol, which supports streaming interactions between LLMs and the backend tools.
+
+You can use it directly with any platform or LLM supporting the mcp specification (e.g., Claude Desktop, OpenAI GPT-4.1).
+
+Usage with Claude Desktop
+Run the following command:
+
+npx forevervm-mcp install --claude
+For other MCP clients, see the docs.
+
+Installing locally (for development only)
+In the MCP client, set the command to npm and the arguments to:
+
+["--prefix", "<path/to/this/directory>", "run", "start", "run"]
+
+ELEMENT.FM MCP Server
+
+This is the MCP server implementation for the ELEMENT.FM API.
+Configuration
+
+Before using the server, you need to set up your API key as an environment variable:
+
+export API_KEY=your_api_key_here
+
+
+You can also optionally configure the frontend URL if you are self hosting (defaults to https://app.element.fm):
+
+export FRONTEND_ROOT_URL=https://your-custom-url.com
+
+
+Python Usage
+
+Pre-built script is published to pypi
+
+uvx elementfm_mcp_server  # For standard I/O mode
+# or
+uvx elementfm_mcp_server sse   # For Server-Sent Events mode port 8000
+
+
+(new server add)
+The official installation instructions can be found here.
+
+{
+  "mcpServers": {
+    "Parallel Task MCP": {
+      "url": "https://task-mcp.parallel.ai/mcp"
+    }
+  }
+}
+
+Set environment variables:
+
+claude_desktop_config.json
+
+{
+  "mcpServers": {
+    "screenshot": {
+      "command": "npx",
+      "args": ["-y", "@urlbox/screenshot-mcp"],
+      "env": {
+        "SECRET_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+
+
+{
+  "mcpServers": {
+    "ip2locationio": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/ip2locationio/src",
+        "run",
+        "server.py"
+      ],
+      "env": {
+        "IP2LOCATION_API_KEY": "<YOUR API key HERE>"
+      }
+    }
+  }
+}
+
+basepath( /Users/sbae703/dev/github_pkgs/mcp/mcp-ip2location-io)
+
+
+Get your API key from ElevenLabs. There is a free tier with 10k credits per month.
+Install uv (Python package manager), install with curl -LsSf https://astral.sh/uv/install.sh | sh or see the uv repo for additional install methods.
+Go to Claude > Settings > Developer > Edit Config > claude_desktop_config.json to include the following:
+{
+  "mcpServers": {
+    "ElevenLabs": {
+      "command": "uvx",
+      "args": ["elevenlabs-mcp"],
+      "env": {
+        "ELEVENLABS_API_KEY": "<insert-your-api-key-here>"
+      }
+    }
+  }
+}
+
+new server (freepik)
+
+Provider
+
+Freepik Company
+Classification
+
+Official classification icon
+official
+Est. Visitors
+
+Info icon
+An estimate of visitors or package downloads that occurred for this server across the MCP ecosystem (not specific to any single platform). We use a mix of publicly available data, social signals, and more to feed an algorithm that drives this estimation.
+16.1k (643 this week)
+Released On
+
+Jun 24, 2025
+Popularity Ranking
+
+Info icon
+Our estimate as to where this MCP server implementation ranks on the global leaderboard of usage.
+#861 (#679 this week)
+Integrates with Freepik's API for searching and downloading icons, managing design resources, and generating images through text-to-image capabilities with job tracking and completion polling.
+
+GitHub icon
+GitHub Repo (26 stars)
+server.json file available
+A standardized, official file format that defines how to use this MCP server. View the file to see installation instructions, configuration options, and usage guidelines.
+
+
+View server.json file
+NAME
+
+com.pulsemcp.mirror/freepik
+
+MAINTAINER
+
+We (PulseMCP) are temporarily managing this server.json file until the maintainer publishes it to the official registry.
+
+Remote Endpoints
+Remote server icon
+Remote One
+URL
+
+Info icon
+This is the exact URL you should copy/paste into your MCP client's configuration.
+https://api.freepik.com/m...
+
+Copy icon
+Auth Type
+
+Info icon
+You will need to set up an API key with the corresponding external service to start using this remote server.
+API Key

@@ -1,0 +1,282 @@
+{
+  "query": "image search",
+  "page": 1,
+  "limit": 20,
+  "total_candidates": 40,
+  "results": [
+    {
+      "tool_id": 4811,
+      "tool_name": "tavily_search",
+      "title": null,
+      "description": "Search the web for current information on any topic. Use for news, facts, or data beyond your knowledge cutoff. Returns snippets and source URLs.",
+      "requires_auth": true,
+      "server": {
+        "name": "io.github.tavily-ai/tavily-mcp",
+        "description": "MCP server for advanced web search using Tavily"
+      },
+      "relevance": 0.5295053246953442,
+      "quality": 0.9404432796002082,
+      "score": 0.611692915676317
+    },
+    {
+      "tool_id": 1861,
+      "tool_name": "search_images",
+      "title": null,
+      "description": "Search historical illustrations, emblems, and engravings in the Source Library gallery. Find images by subject matter, depicted figures, symbols, image type, or time period.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.Embassy-of-the-Free-Mind/source-library",
+        "description": "Search rare historical texts with OCR, translations & DOI citations."
+      },
+      "relevance": 0.6924928279021231,
+      "quality": 0.2433480246561605,
+      "score": 0.6026638672529305
+    },
+    {
+      "tool_id": 100,
+      "tool_name": "model_search",
+      "title": null,
+      "description": "Find Machine Learning models hosted on Hugging Face. Returns comprehensive information about matching models including downloads, likes, tags, and direct links. Include links to the models in your response",
+      "requires_auth": false,
+      "server": {
+        "name": "co.huggingface/hf-mcp-server",
+        "description": "Connect to Hugging Face Hub and thousands of Gradio AI Applications"
+      },
+      "relevance": 0.5776434717868,
+      "quality": 0.125,
+      "score": 0.48711477742944004
+    },
+    {
+      "tool_id": 3254,
+      "tool_name": "search",
+      "title": null,
+      "description": "Full-text search across messages with advanced filtering.\n\nArgs:\n    query: Text to search for (optional if using filters)\n    from_person: Filter to messages from this person (or \"me\")\n    in_chat: Chat ID to search within\n    is_group: True for groups only, False for DMs only\n    has: Content type filter: \"link\", \"image\", \"video\", \"attachment\"\n    since: Time bound (ISO, relative like \"24h\", or natural like \"yesterday\")\n    before: Upper time bound\n    limit: Max results (default 20, max 100)\n    sort: \"recent_first\" (default) or \"oldest_first\"\n    format: \"flat\" (default) or \"grouped_by_chat\"\n    include_context: Include messages before/after each result\n    unanswered: Only return messages from me that didn't receive a reply within unanswered_hours\n    unanswered_hours: Hours to wait for reply before considering unanswered (default 24)\n\nReturns:\n    Search results with people map",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.cyberpapiii/imessage-max",
+        "description": "AI-optimized MCP server for iMessage on macOS. Read, search, and send messages."
+      },
+      "relevance": 0.5422169517961365,
+      "quality": 0.25207278002345873,
+      "score": 0.48418811744160095
+    },
+    {
+      "tool_id": 5576,
+      "tool_name": "create_image_mystic",
+      "title": null,
+      "description": "Convert descriptive text input into images using AI. This endpoint accepts a variety of parameters to customize the generated images.",
+      "requires_auth": false,
+      "server": { "name": "com.freepik/mcp", "description": "Freepik MCP server for image and icon search/generation" },
+      "relevance": 0.4986406672847866,
+      "quality": 0.2807348315306065,
+      "score": 0.45505950013395063
+    },
+    {
+      "tool_id": 3530,
+      "tool_name": "find_models",
+      "title": "Find AI Models",
+      "description": "Search and filter 300+ AI models. Returns ranked results with pricing, context windows, and capabilities.\n\nCall this tool first to discover model IDs, unless the user provides one (format: 'provider/model-name').\n\nParameters:\n- query: Natural language search (e.g., 'fast cheap coding model')\n- provider: Filter by provider(s). Comma-separated for multiple (e.g., 'openai,anthropic')\n- min_context, max_context, max_price_per_m, capabilities: Exact filters\n- sort_by: 'relevance' (default), 'price_asc', 'price_desc', 'date_desc', 'context_desc'\n- limit, offset: Pagination\n\nScores: Results include a 'score' field (0-150+). Higher = more relevant. Combines semantic similarity, capability matching, and model quality signals. Use for relative ranking, not absolute measurement.\n\nUse model IDs from results with get_model for full specs or test_model for live testing.",
+      "requires_auth": true,
+      "server": {
+        "name": "io.github.index9-org/mcp",
+        "description": "Up-to-date model data for AI coding assistants."
+      },
+      "relevance": 0.4685370642390033,
+      "quality": 0.29069308894611157,
+      "score": 0.43296826918042497
+    },
+    {
+      "tool_id": 247,
+      "tool_name": "search_frameworks",
+      "title": null,
+      "description": "Search for frameworks by name, keyword, or feature. Returns a ranked list of matching frameworks with relevance scores.",
+      "requires_auth": false,
+      "server": {
+        "name": "dev.augments/mcp",
+        "description": "Augments MCP Server - A comprehensive framework documentation provider for Claude Code"
+      },
+      "relevance": 0.31867017745971676,
+      "quality": 0.4756513978114964,
+      "score": 0.3500664215300727
+    },
+    {
+      "tool_id": 2319,
+      "tool_name": "search_notebooks",
+      "title": "Search Notebooks",
+      "description": "Search library by query (name, description, topics, tags). Use to propose relevant notebooks for the task and then ask which to use.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.Pantheon-Security/notebooklm-mcp-secure",
+        "description": "Security-hardened NotebookLM MCP with post-quantum encryption"
+      },
+      "relevance": 0.3348575055599212,
+      "quality": 0.3610556049050108,
+      "score": 0.34009712542893916
+    },
+    {
+      "tool_id": 2139,
+      "tool_name": "npmSearch",
+      "title": null,
+      "description": "Search for NPM packages with optional limit",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.Nekzus/npm-sentinel-mcp",
+        "description": "Advanced NPM analysis: Recursive security scanning, ecosystem awareness, and deep insights."
+      },
+      "relevance": 0.31877081394195556,
+      "quality": 0.3576231077296105,
+      "score": 0.3265412726994866
+    },
+    {
+      "tool_id": 2017,
+      "tool_name": "search_definitions",
+      "title": null,
+      "description": "Search FedRAMP definitions by keywords.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.KevinRabun/FedRAMP20xMCP",
+        "description": "An MCP server that provides access to FedRAMP 20x security requirements and controls."
+      },
+      "relevance": 0.3149604797363281,
+      "quality": 0.3611538263593331,
+      "score": 0.3241991490609291
+    },
+    {
+      "tool_id": 2014,
+      "tool_name": "search_requirements",
+      "title": null,
+      "description": "Search for FedRAMP 20x requirements containing specific keywords.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.KevinRabun/FedRAMP20xMCP",
+        "description": "An MCP server that provides access to FedRAMP 20x security requirements and controls."
+      },
+      "relevance": 0.3135809004306793,
+      "quality": 0.3611538263593331,
+      "score": 0.3230954856164101
+    },
+    {
+      "tool_id": 5592,
+      "tool_name": "themes_search",
+      "title": null,
+      "description": "Search 2slides themes by query. Optional limit (max 100).",
+      "requires_auth": false,
+      "server": { "name": "com.2slides/mcp", "description": "2Slides - AI-powered presentation and slide generation." },
+      "relevance": 0.3181810975074768,
+      "quality": 0.3426128731233702,
+      "score": 0.3230674526306555
+    },
+    {
+      "tool_id": 2390,
+      "tool_name": "search-page",
+      "title": null,
+      "description": "Search wiki page titles and contents for the provided search terms, and returns matching pages.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.ProfessionalWiki/mediawiki-mcp-server",
+        "description": "MCP server enabling AI clients to interact with any MediaWiki wiki through standard tools"
+      },
+      "relevance": 0.30657022595405575,
+      "quality": 0.3832867770278041,
+      "score": 0.32191353616880547
+    },
+    {
+      "tool_id": 1851,
+      "tool_name": "search_portfolio",
+      "title": null,
+      "description": "Search your local portfolio by content name, metadata, keywords, tags, or description. This searches your local elements using the portfolio index for fast metadata-based lookups.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.DollhouseMCP/mcp-server",
+        "description": "OSS to create Personas, Skills, Templates, Agents, and Memories to customize your AI experience."
+      },
+      "relevance": 0.31776131987571715,
+      "quality": 0.3348879632642024,
+      "score": 0.3211866485534142
+    },
+    {
+      "tool_id": 1773,
+      "tool_name": "fs_search_files",
+      "title": null,
+      "description": "Search for files by name, content, or metadata",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.Digital-Defiance/mcp-filesystem",
+        "description": "Advanced filesystem operations with strict security boundaries for AI agents"
+      },
+      "relevance": 0.31862987279891963,
+      "quality": 0.3202852483214119,
+      "score": 0.3189609479034181
+    },
+    {
+      "tool_id": 2436,
+      "tool_name": "search_documentation",
+      "title": null,
+      "description": "Search through Optics documentation",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.RoleModel/optics-mcp",
+        "description": "MCP Server for Optics Design System documentation and token usage."
+      },
+      "relevance": 0.34097375869750973,
+      "quality": 0.22371686926846462,
+      "score": 0.3175223808117007
+    },
+    {
+      "tool_id": 2403,
+      "tool_name": "search-page-by-prefix",
+      "title": null,
+      "description": "Performs a prefix search for page titles.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.ProfessionalWiki/mediawiki-mcp-server",
+        "description": "MCP server enabling AI clients to interact with any MediaWiki wiki through standard tools"
+      },
+      "relevance": 0.30016833543777466,
+      "quality": 0.3832867770278041,
+      "score": 0.3167920237557806
+    },
+    {
+      "tool_id": 3242,
+      "tool_name": "search_crypto",
+      "title": null,
+      "description": "Search for cryptocurrencies by name or symbol.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.cybeleri/finance",
+        "description": "Financial data MCP server: stock quotes, crypto prices, portfolio tracking, market analysis"
+      },
+      "relevance": 0.31726368665695187,
+      "quality": 0.3136857466965452,
+      "score": 0.31654809866487055
+    },
+    {
+      "tool_id": 1837,
+      "tool_name": "search_collection_enhanced",
+      "title": null,
+      "description": "Enhanced search for collection content with pagination, filtering, and sorting. Use this for advanced searches when users need specific content types or want to browse results in pages.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.DollhouseMCP/mcp-server",
+        "description": "OSS to create Personas, Skills, Templates, Agents, and Memories to customize your AI experience."
+      },
+      "relevance": 0.30469217896461487,
+      "quality": 0.3348879632642024,
+      "score": 0.3107313358245324
+    },
+    {
+      "tool_id": 1700,
+      "tool_name": "google_drive_search",
+      "title": null,
+      "description": "Search files in Google Drive",
+      "requires_auth": true,
+      "server": {
+        "name": "io.github.Crypto-Goatz/rocket-plus-mcp",
+        "description": "56+ AI tools for CRM, content, workflows, SkillForge & marketing automation."
+      },
+      "relevance": 0.336035019159317,
+      "quality": 0.2031268948233496,
+      "score": 0.30945339429212354
+    }
+  ]
+}

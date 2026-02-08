@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "mcp-kling": {
+      "command": "npx",
+      "args": ["-y", "mcp-kling@latest"],
+      "env": {
+        "KLING_ACCESS_KEY": "${KLING_ACCESS_KEY}",
+        "KLING_SECRET_KEY": "${KLING_SECRET_KEY}"
+      }
+    },
+    "higgsfield-mcp": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/Higgsfield-AI/higgsfield-ai-mcp", "higgsfield-mcp"],
+      "env": {
+        "HF_API_KEY": "${HF_API_KEY}",
+        "HF_SECRET": "${HF_SECRET}"
+      }
+    }
+  }
+}

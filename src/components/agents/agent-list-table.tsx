@@ -17,7 +17,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 
 type Agent = {
@@ -94,17 +94,17 @@ export function AgentListTable({ agents }: { agents: Agent[] }) {
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
                         disabled={deletingId === agent.id}
                       >
                         {deletingId === agent.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <>
-                            <Trash2 className="h-4 w-4 mr-1" />
+                            <Trash2 className="mr-1 h-4 w-4" />
                             Delete
                           </>
                         )}
@@ -114,7 +114,8 @@ export function AgentListTable({ agents }: { agents: Agent[] }) {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Agent</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete <strong>{agent.name}</strong>? This will permanently remove the agent and all associated credentials and signup tasks. This action cannot be undone.
+                          Are you sure you want to delete <strong>{agent.name}</strong>? This will permanently remove
+                          the agent and all associated credentials and signup tasks. This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -137,4 +138,3 @@ export function AgentListTable({ agents }: { agents: Agent[] }) {
     </div>
   );
 }
-

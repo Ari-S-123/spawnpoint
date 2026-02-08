@@ -18,7 +18,10 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
   const { events, isConnected } = useTaskStream(agentId);
 
   // Merge SSE events with initial task data to get latest status per platform
-  const tasksByPlatform = new Map<string, { status: string; message?: string; browserSessionId?: string | null }>();
+  const tasksByPlatform = new Map<
+    string,
+    { status: string; message?: string; browserSessionId?: string | null; screenshot?: string | null }
+  >();
 
   // Start with initial task data
   for (const task of initialTasks) {
@@ -31,10 +34,12 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
 
   // Overlay with latest SSE events (most recent wins)
   for (const event of events) {
+    const prev = tasksByPlatform.get(event.platform);
     tasksByPlatform.set(event.platform, {
       status: event.status,
       message: event.message,
-      browserSessionId: event.browserSessionId ?? tasksByPlatform.get(event.platform)?.browserSessionId
+      browserSessionId: event.browserSessionId ?? prev?.browserSessionId,
+      screenshot: event.screenshot ?? prev?.screenshot
     });
   }
 
@@ -48,7 +53,7 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {(['vercel', 'sentry', 'mintlify', 'instagram', 'tiktok', 'twitter'] as Platform[]).map((platform) => {
+        {(['vercel', 'sentry', 'mintlify', 'instagram', 'twitter'] as Platform[]).map((platform) => {
           const data = tasksByPlatform.get(platform);
           return (
             <PlatformStatusCard
@@ -57,6 +62,7 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
               status={(data?.status ?? 'pending') as 'pending'}
               message={data?.message}
               browserSessionId={data?.browserSessionId}
+              screenshot={data?.screenshot}
             />
           );
         })}

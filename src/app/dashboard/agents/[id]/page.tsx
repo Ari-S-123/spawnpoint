@@ -10,6 +10,8 @@ import { AgentStatusGrid } from '@/components/agents/agent-status-grid';
 import { CredentialsTable } from '@/components/vault/credentials-table';
 import { InboxViewer } from '@/components/inbox/inbox-viewer';
 import { TaskActivityLog } from '@/components/agents/task-activity-log';
+import { ActionsPanel } from '@/components/agents/actions-panel';
+import { IntegrationsPanel } from '@/components/agents/integrations-panel';
 
 export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = await auth.getSession();
@@ -45,14 +47,17 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
     <>
       <Header title={`Agent: ${agent.name}`} />
       <div className="p-6">
-        <div className="mb-6 flex items-center gap-3">
-          <h1 className="text-2xl font-bold">{agent.name}</h1>
-          <Badge variant="outline" className="font-mono text-xs">
-            {agent.email}
-          </Badge>
-          <Badge variant="secondary">
-            {completedCount}/{tasks.length} complete
-          </Badge>
+        <div className="mb-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">{agent.name}</h1>
+            <Badge variant="secondary">
+              {completedCount}/{tasks.length} complete
+            </Badge>
+          </div>
+          <p className="mt-2 text-muted-foreground">
+            <span className="font-medium text-foreground">Email:</span>{' '}
+            <code className="rounded bg-muted px-2 py-1 font-mono text-sm">{agent.email}</code>
+          </p>
         </div>
 
         <Tabs defaultValue="status">
@@ -61,6 +66,8 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
             <TabsTrigger value="inbox">Inbox</TabsTrigger>
             <TabsTrigger value="vault">Credentials</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsTrigger value="integrations">Integrations</TabsTrigger>
+            <TabsTrigger value="actions">Actions</TabsTrigger>
           </TabsList>
 
           <TabsContent value="status" className="mt-6">
@@ -77,6 +84,14 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
 
           <TabsContent value="activity" className="mt-6">
             <TaskActivityLog agentId={agent.id} />
+          </TabsContent>
+
+          <TabsContent value="integrations" className="mt-6">
+            <IntegrationsPanel agentId={agent.id} />
+          </TabsContent>
+
+          <TabsContent value="actions" className="mt-6">
+            <ActionsPanel agentId={agent.id} />
           </TabsContent>
         </Tabs>
       </div>

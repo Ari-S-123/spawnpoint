@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import type { Platform, PlatformCredential } from '@/types';
 
-const PLATFORMS: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'tiktok', 'twitter'];
+const PLATFORMS: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'twitter'];
 
 export function CredentialsTable({ agentId }: { agentId: string }) {
   const [credentials, setCredentials] = useState<Record<string, PlatformCredential | null>>({});

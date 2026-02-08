@@ -11,17 +11,6 @@ const platforms = [
     )
   },
   {
-    name: 'TikTok',
-    category: 'Social Media',
-    gradient: 'from-cyan-400/10 to-pink-500/10',
-    border: 'hover:border-cyan-400/30',
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="currentColor">
-        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.51a8.27 8.27 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.08z" />
-      </svg>
-    )
-  },
-  {
     name: 'X / Twitter',
     category: 'Social Media',
     gradient: 'from-zinc-400/10 to-zinc-600/10',
@@ -85,7 +74,7 @@ export function PlatformGrid() {
           className="mb-16 text-center font-serif text-3xl font-light text-zinc-200 md:text-4xl"
           style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
         >
-          Six platforms. One workflow.
+          Five platforms. One workflow.
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

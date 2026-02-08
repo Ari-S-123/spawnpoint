@@ -25,7 +25,7 @@ Each signup is driven by a cloud browser (Browserbase + Playwright). Verificatio
 | Browser    | Browserbase + Playwright                |
 | UI         | shadcn/ui + Tailwind CSS v4             |
 | Monitoring | Sentry                                  |
-| Runtime    | Bun                                     |
+| Package Manager    | Bun                                     |
 | Deployment | Vercel                                  |
 
 ## Getting started

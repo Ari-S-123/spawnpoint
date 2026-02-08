@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google';
 import { NeonAuthUIProvider } from '@neondatabase/auth/react';
 import { authClient } from '@/lib/auth/client';
 import { Toaster } from '@/components/ui/sonner';
@@ -15,9 +15,15 @@ const geistMono = Geist_Mono({
   subsets: ['latin']
 });
 
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
+  subsets: ['latin'],
+  weight: ['400', '500', '600']
+});
+
 export const metadata: Metadata = {
   title: 'SpawnPoint — One-Click Agent Setup',
-  description: 'Automated account and credential setup for AI agents across six platforms.'
+  description: 'Automated account and credential setup for AI agents across multiple platforms.'
 };
 
 export default function RootLayout({
@@ -27,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}>
         <NeonAuthUIProvider
           authClient={authClient}
           redirectTo="/dashboard"

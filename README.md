@@ -1,6 +1,6 @@
 # SpawnPoint
 
-One-click AI agent onboarding. Automate account creation across 6 platforms for your AI agents.
+Single-click AI Agent onboarding with no friction. Automate account creation across 6 platforms for your AI agents.
 
 Built for the **BetterHack Hackathon @ YC**.
 
@@ -114,7 +114,3 @@ src/
   types/               # Zod schemas, platform types, SSE event types
 proxy.ts               # Auth middleware (protects /dashboard, /api)
 ```
-
-## License
-
-MIT

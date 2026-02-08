@@ -27,6 +27,7 @@ SpawnPoint automates account creation across 6 platforms (Instagram, TikTok, X/T
 3. Each signup: Browserbase cloud browser → fill form → wait for verification email → extract OTP/link → complete signup
 4. On failure: `aiGuidedRecovery()` uses Claude Opus 4.6 with extended thinking to analyze a screenshot and suggest corrective actions
 5. Real-time progress via SSE: `src/lib/events.ts` EventEmitter → `/api/agents/[agentId]/stream` → `useTaskStream()` hook on client
+6. Live View: `bb.sessions.debug(sessionId)` → `debuggerFullscreenUrl` embedded as interactive iframes in the "Live View" tab per agent
 
 ### Auth
 
@@ -52,10 +53,11 @@ Key constraint: DB updates in the orchestrator must filter by BOTH `agentId` AND
 | Module                    | Purpose                                                     |
 | ------------------------- | ----------------------------------------------------------- |
 | `src/lib/orchestrator.ts` | Signup orchestration + AI recovery with Claude              |
-| `src/lib/browser.ts`      | Browserbase + Playwright CDP session management             |
+| `src/lib/browser.ts`      | Browserbase + Playwright CDP session management + live view |
 | `src/lib/agentmail.ts`    | Inbox creation, email polling, OTP extraction               |
 | `src/lib/vault.ts`        | Password generation + credential CRUD (Neon DB, not Vault)  |
 | `src/lib/platforms.ts`    | Platform configs: signup URLs, CSS selectors, CAPTCHA flags |
+| `src/lib/composio.ts`     | Composio SDK wrapper for Instagram posting via API          |
 | `src/lib/events.ts`       | EventEmitter singleton for SSE task updates                 |
 
 ### Frontend
@@ -63,7 +65,8 @@ Key constraint: DB updates in the orchestrator must filter by BOTH `agentId` AND
 - Server Components by default; `'use client'` only where needed (forms, SSE, interactive UI)
 - shadcn/ui components in `src/components/ui/` (New York style)
 - Landing page: luxury dark aesthetic — zinc-950 background, amber accents, Playfair Display serif font
-- Dashboard: Shadcn Sidebar + Tabs layout with 4 tabs per agent (Status, Inbox, Credentials, Activity)
+- Dashboard: Shadcn Sidebar + Tabs layout with 5 tabs per agent (Overview, Live View, Credentials, Activity)
+- Live View tab: Interactive Browserbase iframe embeds per active browser session. `TaskStreamProvider` context deduplicates SSE connections across components.
 
 ## Gotchas
 
@@ -76,4 +79,4 @@ Key constraint: DB updates in the orchestrator must filter by BOTH `agentId` AND
 
 ## Environment Variables
 
-Required in `.env.local`: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEXT_PUBLIC_NEON_AUTH_URL`, `NEON_AUTH_COOKIE_SECRET` (min 32 chars), `AGENTMAIL_API_KEY`, `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `ANTHROPIC_API_KEY`, `SENTRY_DSN`, `NEXT_PUBLIC_APP_URL`
+Required in `.env.local`: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEXT_PUBLIC_NEON_AUTH_URL`, `NEON_AUTH_COOKIE_SECRET` (min 32 chars), `AGENTMAIL_API_KEY`, `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `ANTHROPIC_API_KEY`, `COMPOSIO_API_KEY`, `SENTRY_DSN`, `NEXT_PUBLIC_APP_URL`

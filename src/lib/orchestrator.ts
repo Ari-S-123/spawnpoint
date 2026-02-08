@@ -183,6 +183,14 @@ async function executePlatformSignup(
   try {
     session = await createStagehandSession();
 
+    // Fetch live view URL for iframe embedding (non-blocking failure)
+    let liveViewUrl: string | undefined;
+    try {
+      liveViewUrl = await getSessionLiveViewUrl(session.sessionId);
+    } catch {
+      // Live view unavailable — continue without it
+    }
+
     // Store session ID for live view
     await db
       .update(setupTasks)
@@ -196,6 +204,7 @@ async function executePlatformSignup(
       status: 'in_progress',
       message: `Browser session created. Navigating to ${config.signupUrl}...`,
       browserSessionId: session.sessionId,
+      liveViewUrl,
       timestamp: new Date().toISOString()
     });
 

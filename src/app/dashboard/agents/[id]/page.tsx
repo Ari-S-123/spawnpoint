@@ -1,11 +1,11 @@
 import { notFound, redirect } from 'next/navigation';
 import { db } from '@/db';
 import { agents, setupTasks } from '@/db/schema';
-import { auth } from '@/lib/auth/server';
+import { getCachedSession } from '@/lib/auth/session';
 import { and, eq } from 'drizzle-orm';
+import { formatDistanceToNow } from 'date-fns';
 import { Header } from '@/components/layout/header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import { AgentStatusGrid } from '@/components/agents/agent-status-grid';
 import { CredentialsTable } from '@/components/vault/credentials-table';
 import { InboxViewer } from '@/components/inbox/inbox-viewer';
@@ -14,24 +14,27 @@ import { ActionsPanel } from '@/components/agents/actions-panel';
 import { IntegrationsPanel } from '@/components/agents/integrations-panel';
 
 export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { data: session } = await auth.getSession();
+  const { data: session } = await getCachedSession();
   if (!session?.user) {
     redirect('/auth/sign-in');
   }
 
   const { id } = await params;
 
-  const [agent] = await db
-    .select()
-    .from(agents)
-    .where(and(eq(agents.id, id), eq(agents.operatorId, session.user.id)))
-    .limit(1);
+  const [agentResult, tasks] = await Promise.all([
+    db
+      .select()
+      .from(agents)
+      .where(and(eq(agents.id, id), eq(agents.operatorId, session.user.id)))
+      .limit(1),
+    db.select().from(setupTasks).where(eq(setupTasks.agentId, id))
+  ]);
+
+  const [agent] = agentResult;
 
   if (!agent) {
     notFound();
   }
-
-  const tasks = await db.select().from(setupTasks).where(eq(setupTasks.agentId, id));
 
   const serializedTasks = tasks.map((t) => ({
     id: t.id,
@@ -41,11 +44,9 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
     errorMessage: t.errorMessage
   }));
 
-  const completedCount = tasks.filter((t) => t.status === 'completed').length;
-
   return (
     <>
-      <Header title={`Agent: ${agent.name}`} />
+      <Header breadcrumbs={[{ label: 'Agents', href: '/dashboard' }, { label: agent.name }]} />
       <div className="p-6">
         <div className="mb-6">
           <div className="flex items-center gap-3">
@@ -70,17 +71,20 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
             <TabsTrigger value="actions">Actions</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="status" className="mt-6">
-            <AgentStatusGrid agentId={agent.id} initialTasks={serializedTasks} />
-          </TabsContent>
+                {/* Compact connection status */}
+                <div>
+                  <AgentStatusGrid initialTasks={serializedTasks} />
+                </div>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="inbox" className="mt-6">
-            <InboxViewer inboxId={agent.inboxId} />
-          </TabsContent>
+            <TabsContent value="live" className="mt-0">
+              <LiveViewPanel />
+            </TabsContent>
 
-          <TabsContent value="vault" className="mt-6">
-            <CredentialsTable agentId={agent.id} />
-          </TabsContent>
+            <TabsContent value="vault" className="mt-0">
+              <CredentialsTable agentId={agent.id} />
+            </TabsContent>
 
           <TabsContent value="activity" className="mt-6">
             <TaskActivityLog agentId={agent.id} />

@@ -239,6 +239,11 @@ export async function injectOTP(stagehand: Stagehand, otp: string, instruction?:
   await stagehand.act('click the verify or confirm or submit button');
 }
 
+export async function getSessionLiveViewUrl(sessionId: string): Promise<string> {
+  const debugInfo = await bb.sessions.debug(sessionId);
+  return debugInfo.debuggerFullscreenUrl;
+}
+
 export async function takeScreenshot(page: Page): Promise<string> {
   const buffer = await page.screenshot({ type: 'png', fullPage: false });
   return buffer.toString('base64');

@@ -142,3 +142,17 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Official Nextjs.gitignore parity
+/node_modules
+/.pnp
+.pnp.js
+/coverage
+/.next/
+/out/
+/build
+.DS_Store
+*.pem
+.env*.local
+.vercel
+next-env.d.ts

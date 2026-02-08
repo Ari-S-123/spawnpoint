@@ -37,7 +37,7 @@
 
 ## 1. Executive Summary
 
-**SpawnPoint** is a one-click agent onboarding tool that automates the creation and configuration of accounts across six platforms (Instagram, TikTok, X/Twitter, Mintlify, Vercel, Sentry) for new AI agents. It leverages AgentMail for disposable email inboxes, Browserbase for cloud-hosted browser automation, and Claude Opus 4.6 (via Vercel AI SDK) as an intelligent orchestrator that can reason about signup flow failures and adaptively recover.
+**SpawnPoint** is a one-click agent onboarding tool that automates the creation and configuration of accounts across multiple platforms (Instagram, TikTok, X/Twitter, Mintlify, Vercel, Sentry) for new AI agents. It leverages AgentMail for disposable email inboxes, Browserbase for cloud-hosted browser automation, and Claude Opus 4.6 (via Vercel AI SDK) as an intelligent orchestrator that can reason about signup flow failures and adaptively recover.
 
 The core value proposition: what currently takes an operator 30-60 minutes of manual signup drudgery per agent is reduced to a single button press and ~2 minutes of automated execution.
 
@@ -207,7 +207,7 @@ import { anthropic } from '@ai-sdk/anthropic';
 import { z } from 'zod';
 
 const { output } = await generateText({
-  model: anthropic('claude-opus-4-6-20250414'),
+  model: anthropic('claude-opus-4-6'),
   output: Output.object({
     schema: z.object({
       action: z.enum(['fill_form', 'click_button', 'extract_otp', 'screenshot']),
@@ -221,13 +221,13 @@ const { output } = await generateText({
 
 **Claude Opus 4.6 Configuration:**
 
-- Model ID: `claude-opus-4-6-20250414` (use the exact model string from the Anthropic provider)
+- Model ID: `claude-opus-4-6` (use the exact model string from the Anthropic provider)
 - Extended Thinking: Enabled via `providerOptions.anthropic.thinking.type: 'enabled'`
 - Budget Tokens: Set `budgetTokens` for thinking depth control (e.g., `10000` for "high" thinking)
 
 ```typescript
 const result = await generateText({
-  model: anthropic('claude-opus-4-6-20250414'),
+  model: anthropic('claude-opus-4-6'),
   providerOptions: {
     anthropic: {
       thinking: {
@@ -687,7 +687,7 @@ export const CreateAgentSchema = z.object({
 
 export type CreateAgentInput = z.infer<typeof CreateAgentSchema>;
 
-/** The six target platforms. */
+/** The target platforms. */
 export const PLATFORMS = ['instagram', 'tiktok', 'twitter', 'mintlify', 'vercel', 'sentry'] as const;
 
 export type Platform = (typeof PLATFORMS)[number];
@@ -1330,7 +1330,7 @@ import type { Platform } from '@/types';
 /**
  * The Claude model instance configured with extended thinking.
  */
-const model = anthropic('claude-opus-4-6-20250414');
+const model = anthropic('claude-opus-4-6');
 
 /**
  * Schema for the AI's next-action decision.
@@ -1717,7 +1717,7 @@ Design direction: Dark theme, sleek, particle effects in the hero. Use CSS `@key
 
 Key sections:
 
-1. **Hero** — "One Click. Six Platforms. Zero Friction." with a glowing CTA button.
+1. **Hero** — "One Click. Multiple Platforms. Zero Friction." with a glowing CTA button.
 2. **Platform Grid** — Animated cards showing Instagram, TikTok, X, Mintlify, Vercel, Sentry logos.
 3. **How It Works** — Three-step visual (Create → Automate → Operate).
 4. **CTA** — "Get Started" → `/auth/sign-up`.

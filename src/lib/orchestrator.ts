@@ -167,11 +167,7 @@ async function executePlatformSignup(
         const { connectInstagramAccount, publishFirstPost } = await import('@/lib/composio');
         const { getCredential } = await import('@/lib/vault');
 
-        const [agent] = await db
-          .select({ name: agents.name })
-          .from(agents)
-          .where(eq(agents.id, agentId))
-          .limit(1);
+        const [agent] = await db.select({ name: agents.name }).from(agents).where(eq(agents.id, agentId)).limit(1);
 
         const agentName = agent?.name ?? agentId;
 
@@ -190,11 +186,7 @@ async function executePlatformSignup(
             timestamp: new Date().toISOString()
           });
 
-          const connectionResult = await connectInstagramAccount(
-            creds.email,
-            creds.password,
-            agentId
-          );
+          const connectionResult = await connectInstagramAccount(creds.email, creds.password, agentId);
 
           if (!connectionResult.success) {
             console.error('[instagram] Composio connection failed:', connectionResult.error);
@@ -258,7 +250,7 @@ async function executePlatformSignup(
     }
   } finally {
     if (browser) {
-      await browser.close().catch(() => { });
+      await browser.close().catch(() => {});
     }
   }
 }
@@ -315,7 +307,7 @@ Be specific about CSS selectors and values.`
       });
     }
   } finally {
-    await session.browser.close().catch(() => { });
+    await session.browser.close().catch(() => {});
   }
 }
 

@@ -21,6 +21,7 @@ export type TaskStatusEvent = {
   status: 'pending' | 'in_progress' | 'awaiting_verification' | 'needs_human' | 'completed' | 'failed';
   message: string;
   browserSessionId?: string;
+  liveViewUrl?: string;
   timestamp: string;
 };
 

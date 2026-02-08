@@ -55,9 +55,7 @@ export function InboxViewer({ inboxId }: { inboxId: string }) {
     return (
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-zinc-800/50 p-12 text-center">
         <Mail className="mb-3 h-8 w-8 text-amber-400/60" />
-        <p className="text-sm text-zinc-300" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-          No messages yet
-        </p>
+        <p className="text-sm text-zinc-300">No messages yet</p>
         <p className="mt-1 text-xs text-zinc-500">Verification emails will appear here.</p>
         <Button
           variant="outline"

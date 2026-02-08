@@ -23,7 +23,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: 'SpawnPoint — One-Click Agent Setup',
-  description: 'Automated account and credential setup for AI agents across six platforms.'
+  description: 'Automated account and credential setup for AI agents across multiple platforms.'
 };
 
 export default function RootLayout({

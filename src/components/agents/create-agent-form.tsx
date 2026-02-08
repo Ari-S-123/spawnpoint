@@ -74,7 +74,7 @@ export function CreateAgentForm({ agentCount }: { agentCount: number }) {
         <CardDescription>
           {atLimit
             ? 'Agent limit reached. Delete an existing agent to create a new one.'
-            : 'Enter a name for your AI agent. SpawnPoint will automatically create accounts across all six platforms.'}
+            : 'Enter a name for your AI agent. SpawnPoint will automatically create accounts across all multiple platforms.'}
         </CardDescription>
       </CardHeader>
       <CardContent>

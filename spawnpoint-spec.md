@@ -37,7 +37,7 @@
 
 ## 1. Executive Summary
 
-**SpawnPoint** is a one-click agent onboarding tool that automates the creation and configuration of accounts across six platforms (Instagram, TikTok, X/Twitter, Mintlify, Vercel, Sentry) for new AI agents. It leverages AgentMail for disposable email inboxes, Browserbase for cloud-hosted browser automation, and Claude Opus 4.6 (via Vercel AI SDK) as an intelligent orchestrator that can reason about signup flow failures and adaptively recover.
+**SpawnPoint** is a one-click agent onboarding tool that automates the creation and configuration of accounts across multiple platforms (Instagram, TikTok, X/Twitter, Mintlify, Vercel, Sentry) for new AI agents. It leverages AgentMail for disposable email inboxes, Browserbase for cloud-hosted browser automation, and Claude Opus 4.6 (via Vercel AI SDK) as an intelligent orchestrator that can reason about signup flow failures and adaptively recover.
 
 The core value proposition: what currently takes an operator 30-60 minutes of manual signup drudgery per agent is reduced to a single button press and ~2 minutes of automated execution.
 
@@ -687,7 +687,7 @@ export const CreateAgentSchema = z.object({
 
 export type CreateAgentInput = z.infer<typeof CreateAgentSchema>;
 
-/** The six target platforms. */
+/** The target platforms. */
 export const PLATFORMS = ['instagram', 'tiktok', 'twitter', 'mintlify', 'vercel', 'sentry'] as const;
 
 export type Platform = (typeof PLATFORMS)[number];
@@ -1717,7 +1717,7 @@ Design direction: Dark theme, sleek, particle effects in the hero. Use CSS `@key
 
 Key sections:
 
-1. **Hero** — "One Click. Six Platforms. Zero Friction." with a glowing CTA button.
+1. **Hero** — "One Click. Multiple Platforms. Zero Friction." with a glowing CTA button.
 2. **Platform Grid** — Animated cards showing Instagram, TikTok, X, Mintlify, Vercel, Sentry logos.
 3. **How It Works** — Three-step visual (Create → Automate → Operate).
 4. **CTA** — "Get Started" → `/auth/sign-up`.

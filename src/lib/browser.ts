@@ -15,7 +15,7 @@ export async function createStagehandSession(): Promise<StagehandSession> {
     env: 'BROWSERBASE',
     apiKey: process.env.BROWSERBASE_API_KEY!,
     projectId: process.env.BROWSERBASE_PROJECT_ID!,
-    model: 'anthropic/claude-opus-4-5-20251101',
+    model: 'anthropic/claude-opus-4-6',
     experimental: true,
     verbose: 2
   });
@@ -159,7 +159,7 @@ export async function performSignup(
     `- If you encounter a CAPTCHA, stop immediately — do NOT try to solve it.`;
 
   const agent = stagehand.agent({
-    model: 'anthropic/claude-opus-4-5-20251101',
+    model: 'anthropic/claude-opus-4-6',
     mode: 'cua',
     systemPrompt
   });
@@ -201,7 +201,7 @@ export async function navigateToDashboard(stagehand: Stagehand, page: Page, conf
   console.log(`[BROWSER] [${config.platform}] Running post-verification agent to reach dashboard...`);
 
   const agent = stagehand.agent({
-    model: 'anthropic/claude-opus-4-5-20251101',
+    model: 'anthropic/claude-opus-4-6',
     mode: 'cua',
     systemPrompt:
       `You are navigating a ${config.platform} account after email verification. ` +

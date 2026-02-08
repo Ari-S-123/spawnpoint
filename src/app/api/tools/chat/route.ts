@@ -73,7 +73,7 @@ export async function POST(request: Request) {
   ].join('\n');
 
   const result = streamText({
-    model: anthropic('claude-sonnet-4-5-20250929'),
+    model: anthropic('claude-opus-4-6'),
     stopWhen: stepCountIs(10),
     system: systemPrompt,
     messages: modelMessages,

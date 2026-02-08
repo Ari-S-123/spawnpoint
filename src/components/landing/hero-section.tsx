@@ -35,7 +35,7 @@ export function HeroSection() {
           One Click.
           <br />
           <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 bg-clip-text text-transparent">
-            Five Platforms.
+            Multiple Platforms.
           </span>
           <br />
           Zero Friction.

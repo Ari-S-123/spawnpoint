@@ -15,18 +15,18 @@ Each signup is driven by a cloud browser (Browserbase + Playwright). Verificatio
 
 ## Stack
 
-| Layer      | Tech                                    |
-| ---------- | --------------------------------------- |
-| Framework  | Next.js 16 (App Router, React Compiler) |
-| Auth       | Neon Auth (`@neondatabase/auth`)        |
-| Database   | Neon Postgres + Drizzle ORM             |
-| AI         | Vercel AI SDK + Claude Opus 4.6         |
-| Email      | AgentMail (disposable inboxes)          |
-| Browser    | Browserbase + Playwright                |
-| UI         | shadcn/ui + Tailwind CSS v4             |
-| Monitoring | Sentry                                  |
-| Package Manager    | Bun                                     |
-| Deployment | Vercel                                  |
+| Layer           | Tech                                    |
+| --------------- | --------------------------------------- |
+| Framework       | Next.js 16 (App Router, React Compiler) |
+| Auth            | Neon Auth (`@neondatabase/auth`)        |
+| Database        | Neon Postgres + Drizzle ORM             |
+| AI              | Vercel AI SDK + Claude Opus 4.6         |
+| Email           | AgentMail (disposable inboxes)          |
+| Browser         | Browserbase + Playwright                |
+| UI              | shadcn/ui + Tailwind CSS v4             |
+| Monitoring      | Sentry                                  |
+| Package Manager | Bun                                     |
+| Deployment      | Vercel                                  |
 
 ## Getting started
 

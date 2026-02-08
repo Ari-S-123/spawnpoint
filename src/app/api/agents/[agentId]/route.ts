@@ -42,6 +42,7 @@ export async function DELETE(
 
   const { agentId } = await params;
 
+  // First verify the agent exists and belongs to this user
   const [agent] = await db
     .select()
     .from(agents)
@@ -52,13 +53,10 @@ export async function DELETE(
     return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
   }
 
-  try {
-    await deleteInbox(agent.inboxId);
-  } catch (error) {
-    console.error('[DELETE /api/agents] Failed to delete inbox:', error);
-  }
-
+  // Delete the agent (cascade will handle setup_tasks and credentials)
   await db.delete(agents).where(eq(agents.id, agentId));
 
-  return NextResponse.json({ success: true });
+  console.log(`[DELETE /api/agents/${agentId}] Agent "${agent.name}" deleted by user ${session.user.id}`);
+
+  return NextResponse.json({ success: true, deletedAgent: agent });
 }

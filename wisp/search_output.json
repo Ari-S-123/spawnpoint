@@ -1,0 +1,78 @@
+{
+  "query": "image search tool",
+  "page": 1,
+  "limit": 5,
+  "total_candidates": 100,
+  "results": [
+    {
+      "tool_id": 5174,
+      "tool_name": "start_search",
+      "title": null,
+      "description": "\n                        Start a streaming search that can return results progressively.\n                        \n                        SEARCH STRATEGY GUIDE:\n                        Choose the right search type based on what the user is looking for:\n                        \n                        USE searchType=\"files\" WHEN:\n                        - User asks for specific files: \"find package.json\", \"locate config files\"\n                        - Pattern looks like a filename: \"*.js\", \"README.md\", \"test-*.tsx\" \n                        - User wants to find files by name/extension: \"all TypeScript files\", \"Python scripts\"\n                        - Looking for configuration/setup files: \".env\", \"dockerfile\", \"tsconfig.json\"\n                        \n                        USE searchType=\"content\" WHEN:\n                        - User asks about code/logic: \"authentication logic\", \"error handling\", \"API calls\"\n                        - Looking for functions/variables: \"getUserData function\", \"useState hook\"\n                        - Searching for text/comments: \"TODO items\", \"FIXME comments\", \"documentation\"\n                        - Finding patterns in code: \"console.log statements\", \"import statements\"\n                        - User describes functionality: \"components that handle login\", \"files with database queries\"\n                        \n                        WHEN UNSURE OR USER REQUEST IS AMBIGUOUS:\n                        Run TWO searches in parallel - one for files and one for content:\n                        \n                        Example approach for ambiguous queries like \"find authentication stuff\":\n                        1. Start file search: searchType=\"files\", pattern=\"auth\"\n                        2. Simultaneously start content search: searchType=\"content\", pattern=\"authentication\"  \n                        3. Present combined results: \"Found 3 auth-related files and 8 files containing authentication code\"\n                        \n                        SEARCH TYPES:\n                        - searchType=\"files\": Find files by name (pattern matches file names)\n                        - searchType=\"content\": Search inside files for text patterns\n                        \n                        PATTERN MATCHING MODES:\n                        - Default (literalSearch=false): Patterns are treated as regular expressions\n                        - Literal (literalSearch=true): Patterns are treated as exact strings\n                        \n                        WHEN TO USE literalSearch=true:\n                        Use literal search when searching for code patterns with special characters:\n                        - Function calls with parentheses and quotes\n                        - Array access with brackets\n                        - Object methods with dots and parentheses\n                        - File paths with backslashes\n                        - Any pattern containing: . * + ? ^ $ { } [ ] | \\ ( )\n                        \n                        IMPORTANT PARAMETERS:\n                        - pattern: What to search for (file names OR content text)\n                        - literalSearch: Use exact string matching instead of regex (default: false)\n                        - filePattern: Optional filter to limit search to specific file types (e.g., \"*.js\", \"package.json\")\n                        - ignoreCase: Case-insensitive search (default: true). Works for both file names and content.\n                        - earlyTermination: Stop search early when exact filename match is found (optional: defaults to true for file searches, false for content searches)\n                        \n                        DECISION EXAMPLES:\n                        - \"find package.json\" → searchType=\"files\", pattern=\"package.json\" (specific file)\n                        - \"find authentication components\" → searchType=\"content\", pattern=\"authentication\" (looking for functionality)\n                        - \"locate all React components\" → searchType=\"files\", pattern=\"*.tsx\" or \"*.jsx\" (file pattern)\n                        - \"find TODO comments\" → searchType=\"content\", pattern=\"TODO\" (text in files)\n                        - \"show me login files\" → AMBIGUOUS → run both: files with \"login\" AND content with \"login\"\n                        - \"find config\" → AMBIGUOUS → run both: config files AND files containing config code\n                        \n                        COMPREHENSIVE SEARCH EXAMPLES:\n                        - Find package.json files: searchType=\"files\", pattern=\"package.json\"\n                        - Find all JS files: searchType=\"files\", pattern=\"*.js\"\n                        - Search for TODO in code: searchType=\"content\", pattern=\"TODO\", filePattern=\"*.js|*.ts\"\n                        - Search for exact code: searchType=\"content\", pattern=\"toast.error('test')\", literalSearch=true\n                        - Ambiguous request \"find auth stuff\": Run two searches:\n                          1. searchType=\"files\", pattern=\"auth\"\n                          2. searchType=\"content\", pattern=\"authentication\"\n                        \n                        PRO TIP: When user requests are ambiguous about whether they want files or content,\n                        run both searches concurrently and combine results for comprehensive coverage.\n                        \n                        Unlike regular search tools, this starts a background search process and returns\n                        immediately with a session ID. Use get_more_search_results to get results as they\n                        come in, and stop_search to stop the search early if needed.\n                        \n                        Perfect for large directories where you want to see results immediately and\n                        have the option to cancel if the search takes too long or you find what you need.\n                        \n                        IMPORTANT: Always use absolute paths for reliability. Paths are automatically normalized regardless of slash direction. Relative paths may fail as they depend on the current working directory. Tilde paths (~/...) might not work in all contexts. Unless the user explicitly asks for relative paths, use absolute paths.\n                        This command can be referenced as \"DC: ...\" or \"use Desktop Commander to ...\" in your instructions.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.wonderwhy-er/desktop-commander",
+        "description": "MCP server for terminal commands, file operations, and process management"
+      },
+      "relevance": 0.30759845376014705,
+      "quality": 1.0,
+      "score": 0.44607876300811766
+    },
+    {
+      "tool_id": 5177,
+      "tool_name": "list_searches",
+      "title": null,
+      "description": "\n                        List all active searches.\n                        \n                        Shows search IDs, search types, patterns, status, and runtime.\n                        Similar to list_sessions for terminal processes. Useful for managing\n                        multiple concurrent searches.\n                        \n                        This command can be referenced as \"DC: ...\" or \"use Desktop Commander to ...\" in your instructions.",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.wonderwhy-er/desktop-commander",
+        "description": "MCP server for terminal commands, file operations, and process management"
+      },
+      "relevance": 0.30454723238945003,
+      "quality": 1.0,
+      "score": 0.44363778591156006
+    },
+    {
+      "tool_id": 4811,
+      "tool_name": "tavily_search",
+      "title": null,
+      "description": "Search the web for current information on any topic. Use for news, facts, or data beyond your knowledge cutoff. Returns snippets and source URLs.",
+      "requires_auth": true,
+      "server": {
+        "name": "io.github.tavily-ai/tavily-mcp",
+        "description": "MCP server for advanced web search using Tavily"
+      },
+      "relevance": 0.31233783960342404,
+      "quality": 0.9404432796002082,
+      "score": 0.4379589276027809
+    },
+    {
+      "tool_id": 4615,
+      "tool_name": "analyze_previously_received_image",
+      "title": "Analyze Previously Received Image",
+      "description": "Analyze a previously received image that was saved by any ROS operation.\nImages can be received from:\n- Any topic containing image data (not just topics with 'Image' in the name)\n- Service responses containing image data\n- subscribe_once() or subscribe_for_duration() operations\nUse this tool to analyze the saved image after receiving it from any source.\n",
+      "requires_auth": false,
+      "server": {
+        "name": "io.github.robotmcp/ros-mcp-server",
+        "description": "Connect AI models like Claude & ChatGPT with ROS robots using MCP"
+      },
+      "relevance": 0.3208271026611328,
+      "quality": 0.8306338619858391,
+      "score": 0.42278845452607405
+    },
+    {
+      "tool_id": 4561,
+      "tool_name": "ref_search_documentation",
+      "title": null,
+      "description": "Search for documentation on the web or github as well from private resources like repos and pdfs. Use Ref 'ref_read_url' to read the content of a url.",
+      "requires_auth": true,
+      "server": {
+        "name": "io.github.ref-tools/ref-tools-mcp",
+        "description": "Token efficient search for coding agents over public and private documentation."
+      },
+      "relevance": 0.3016696214675903,
+      "quality": 0.8641462414676445,
+      "score": 0.4141649454676012
+    }
+  ]
+}

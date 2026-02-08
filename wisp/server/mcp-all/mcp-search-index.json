@@ -1,0 +1,35 @@
+{
+  "indexData": {
+    "reg": "{}"
+  },
+  "servers": {
+    "undefined": {
+      "server": {
+        "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+        "name": "ai.mcpanalytics/analytics",
+        "description": "ML statistical analysis platform for data teams",
+        "repository": {},
+        "version": "1.0.0",
+        "remotes": [
+          {
+            "type": "streamable-http",
+            "url": "https://api.mcpanalytics.ai/auth0"
+          }
+        ]
+      },
+      "_meta": {
+        "io.modelcontextprotocol.registry/official": {
+          "status": "active",
+          "publishedAt": "2025-09-17T02:35:06.675809Z",
+          "updatedAt": "2025-09-17T02:38:18.073872Z",
+          "isLatest": false
+        }
+      }
+    }
+  },
+  "metadata": {
+    "totalServers": 1,
+    "buildDate": "2026-01-29T06:39:18.279Z",
+    "version": "1.0.0"
+  }
+}

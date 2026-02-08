@@ -11,15 +11,6 @@ import type { Platform, PlatformCredential } from '@/types';
 
 const PLATFORMS: Platform[] = ['vercel', 'sentry', 'mintlify', 'instagram', 'twitter'];
 
-const PLATFORM_COLORS: Record<string, string> = {
-  instagram: 'border-pink-500/30 text-pink-300',
-  tiktok: 'border-cyan-400/30 text-cyan-300',
-  twitter: 'border-zinc-400/30 text-zinc-300',
-  mintlify: 'border-green-400/30 text-green-300',
-  vercel: 'border-zinc-300/30 text-zinc-300',
-  sentry: 'border-purple-400/30 text-purple-300'
-};
-
 export function CredentialsTable({ agentId }: { agentId: string }) {
   const [credentials, setCredentials] = useState<Record<string, PlatformCredential | null>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});

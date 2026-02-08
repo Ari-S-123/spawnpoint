@@ -25,39 +25,25 @@ const STATUS_CONFIG: Record<string, { label: string; dotColor: string; icon: Rea
   failed: { label: 'Failed', dotColor: 'bg-red-400', icon: XCircle }
 };
 
-const PLATFORMS: { key: Platform; name: string }[] = [
-  { key: 'vercel', name: 'Vercel' },
-  { key: 'sentry', name: 'Sentry' },
-  { key: 'mintlify', name: 'Mintlify' },
-  { key: 'instagram', name: 'Instagram' },
-  { key: 'twitter', name: 'X / Twitter' }
-];
+  // Merge SSE events with initial task data to get latest status per platform
+  const tasksByPlatform = new Map<
+    string,
+    { status: string; message?: string; browserSessionId?: string | null; screenshot?: string | null }
+  >();
 
 export function AgentStatusGrid({ initialTasks }: { initialTasks: Task[] }) {
   const { events, isConnected } = useTaskStreamContext();
 
-  const tasksByPlatform = useMemo(() => {
-    const map = new Map<
-      string,
-      { status: string; message?: string; browserSessionId?: string | null; liveViewUrl?: string }
-    >();
-    for (const task of initialTasks) {
-      map.set(task.platform, {
-        status: task.status,
-        message: task.errorMessage ?? undefined,
-        browserSessionId: task.browserSessionId
-      });
-    }
-    for (const event of events) {
-      map.set(event.platform, {
-        status: event.status,
-        message: event.message,
-        browserSessionId: event.browserSessionId ?? map.get(event.platform)?.browserSessionId,
-        liveViewUrl: event.liveViewUrl ?? map.get(event.platform)?.liveViewUrl
-      });
-    }
-    return map;
-  }, [initialTasks, events]);
+  // Overlay with latest SSE events (most recent wins)
+  for (const event of events) {
+    const prev = tasksByPlatform.get(event.platform);
+    tasksByPlatform.set(event.platform, {
+      status: event.status,
+      message: event.message,
+      browserSessionId: event.browserSessionId ?? prev?.browserSessionId,
+      screenshot: event.screenshot ?? prev?.screenshot
+    });
+  }
 
   return (
     <div className="rounded-xl border border-zinc-800/50 bg-card/50">
@@ -76,33 +62,18 @@ export function AgentStatusGrid({ initialTasks }: { initialTasks: Task[] }) {
         </Badge>
       </div>
 
-      {/* Platform list */}
-      <div className="divide-y divide-border/20">
-        {PLATFORMS.map(({ key, name }) => {
-          const data = tasksByPlatform.get(key);
-          const status = data?.status ?? 'pending';
-          const config = (STATUS_CONFIG[status] ?? STATUS_CONFIG['pending'])!;
-          const StatusIcon = config.icon;
-
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {(['vercel', 'sentry', 'mintlify', 'instagram', 'twitter'] as Platform[]).map((platform) => {
+          const data = tasksByPlatform.get(platform);
           return (
-            <div key={key} className="flex items-center gap-2.5 px-4 py-2">
-              <div className={cn('h-2 w-2 shrink-0 rounded-full', config.dotColor)} />
-              <span className="min-w-0 flex-1 truncate text-xs">{name}</span>
-              <div className="flex items-center gap-1.5">
-                <StatusIcon className={cn('h-3 w-3 text-muted-foreground', config.spin && 'animate-spin')} />
-                <span className="text-[10px] text-muted-foreground">{config.label}</span>
-              </div>
-              {status === 'needs_human' && data?.browserSessionId && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-5 w-5 text-amber-400"
-                  onClick={() => window.open(`https://www.browserbase.com/sessions/${data.browserSessionId}`, '_blank')}
-                >
-                  <ExternalLink className="h-2.5 w-2.5" />
-                </Button>
-              )}
-            </div>
+            <PlatformStatusCard
+              key={platform}
+              platform={platform}
+              status={(data?.status ?? 'pending') as 'pending'}
+              message={data?.message}
+              browserSessionId={data?.browserSessionId}
+              screenshot={data?.screenshot}
+            />
           );
         })}
       </div>

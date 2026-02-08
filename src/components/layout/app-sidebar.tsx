@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, Settings } from 'lucide-react';
+import { Bot, Plus, Settings, Zap } from 'lucide-react';
 import { UserButton } from '@neondatabase/auth/react';
 import { cn } from '@/lib/utils';
 import {
@@ -19,8 +19,10 @@ import {
 } from '@/components/ui/sidebar';
 
 const navItems = [
-  { title: 'Agents', href: '/dashboard', icon: Bot, matchPrefix: '/dashboard' },
-  { title: 'Settings', href: '/dashboard/settings', icon: Settings, matchPrefix: '/dashboard/settings' }
+  { title: 'Agents', href: '/dashboard', icon: Bot },
+  { title: 'Create Agent', href: '/dashboard?create=true', icon: Plus },
+  { title: 'Actions', href: '/dashboard/actions', icon: Zap },
+  { title: 'Settings', href: '/account/settings', icon: Settings }
 ];
 
 export function AppSidebar() {

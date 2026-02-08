@@ -48,6 +48,32 @@ export const credentials = pgTable('credentials', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
 });
 
+export const composioAppEnum = pgEnum('composio_app', [
+  'gmail',
+  'instagram',
+  'tiktok',
+  'twitter',
+  'sentry',
+  'vercel',
+  'mintlify',
+  'github'
+]);
+
+export const integrationStatusEnum = pgEnum('integration_status', ['pending', 'connected', 'failed']);
+
+export const integrations = pgTable('integrations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  agentId: uuid('agent_id')
+    .references(() => agents.id, { onDelete: 'cascade' })
+    .notNull(),
+  app: composioAppEnum('app').notNull(),
+  connectedAccountId: text('connected_account_id'),
+  status: integrationStatusEnum('status').default('pending').notNull(),
+  metadata: jsonb('metadata').$type<Record<string, unknown>>(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
+});
+
 export const auditLog = pgTable('audit_log', {
   id: uuid('id').primaryKey().defaultRandom(),
   operatorId: text('operator_id').notNull(),

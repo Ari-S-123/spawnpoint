@@ -13,7 +13,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       '4. Type the provided email into the email field\n' +
       '5. Click the Continue/Submit button to send the verification code\n' +
       'Stop when the page says a verification email has been sent or asks for a code.',
-    successIndicator: 'The URL contains "vercel.com/new" or "vercel.com/dashboard" or the page shows a project creation wizard or dashboard overview.',
+    successIndicator:
+      'The URL contains "vercel.com/new" or "vercel.com/dashboard" or the page shows a project creation wizard or dashboard overview.'
   },
   sentry: {
     platform: 'sentry',
@@ -25,7 +26,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       '2. Type the provided password into the "Password" field\n' +
       '3. Click the "CREATE YOUR ACCOUNT" button\n' +
       'Stop when either a verification email prompt appears or you reach the Sentry onboarding/dashboard.',
-    successIndicator: 'The URL contains "sentry.io/onboarding" or "sentry.io/organizations" or the page shows onboarding steps or a dashboard.',
+    successIndicator:
+      'The URL contains "sentry.io/onboarding" or "sentry.io/organizations" or the page shows onboarding steps or a dashboard.'
   },
   mintlify: {
     platform: 'mintlify',
@@ -37,7 +39,8 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       '2. Type the provided password into the password field\n' +
       '3. Click the "Sign up" button\n' +
       'Stop when a verification prompt appears or you reach the Mintlify dashboard.',
-    successIndicator: 'The URL contains "dashboard.mintlify.com" and the page shows a dashboard, project list, or onboarding wizard (not the signup form).',
+    successIndicator:
+      'The URL contains "dashboard.mintlify.com" and the page shows a dashboard, project list, or onboarding wizard (not the signup form).'
   },
   instagram: {
     platform: 'instagram',
@@ -52,8 +55,9 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       '5. Click the "Sign up" button\n' +
       '6. If a birthday screen appears, select the provided birth month, day, and year from the dropdowns and click "Next"\n' +
       'Stop when a confirmation code entry screen appears or you see a prompt to enter a code.',
-    successIndicator: 'The page shows the Instagram feed, profile setup, or the URL contains "instagram.com/accounts/onetap" or similar logged-in state.',
-    fillOtp: 'type %otp% into the confirmation code input field',
+    successIndicator:
+      'The page shows the Instagram feed, profile setup, or the URL contains "instagram.com/accounts/onetap" or similar logged-in state.',
+    fillOtp: 'type %otp% into the confirmation code input field'
   },
   twitter: {
     platform: 'twitter',
@@ -73,6 +77,6 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
       '10. If a password field appears, type the provided password and click "Next"\n' +
       'Stop when a verification code input appears or you reach the X home feed.',
     successIndicator: 'The URL is "x.com/home" or the page shows the X/Twitter feed, or profile setup flow.',
-    fillOtp: 'type %otp% into the verification code input field',
-  },
+    fillOtp: 'type %otp% into the verification code input field'
+  }
 };

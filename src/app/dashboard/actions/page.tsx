@@ -11,7 +11,7 @@ export default async function ActionsPage() {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col">
-      <Header title="Actions" />
+      <Header breadcrumbs={[{ label: 'Actions' }]} />
       <div className="flex-1 overflow-hidden">
         <ActionsPanel />
       </div>

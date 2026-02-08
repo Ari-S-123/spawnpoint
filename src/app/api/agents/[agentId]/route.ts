@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { agents, setupTasks } from '@/db/schema';
 import { auth } from '@/lib/auth/server';
-import { deleteInbox } from '@/lib/agentmail';
+
 import { and, eq } from 'drizzle-orm';
 
 export async function GET(

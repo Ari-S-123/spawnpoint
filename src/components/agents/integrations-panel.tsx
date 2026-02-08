@@ -139,9 +139,7 @@ export function IntegrationsPanel({ agentId }: Props) {
               </CardHeader>
               <CardContent>
                 {status === 'connected' ? (
-                  <p className="text-xs text-muted-foreground">
-                    Ready to use in Actions tab.
-                  </p>
+                  <p className="text-xs text-muted-foreground">Ready to use in Actions tab.</p>
                 ) : status === 'pending' ? (
                   <p className="text-xs text-muted-foreground">Waiting for OAuth...</p>
                 ) : (

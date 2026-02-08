@@ -142,7 +142,7 @@ function ThinkingBlock({ text, isStreaming }: { text: string; isStreaming: boole
     <div className="my-2 rounded-lg border border-amber-500/20 bg-amber-500/5">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-amber-400/80 hover:text-amber-300 transition-colors"
+        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-amber-400/80 transition-colors hover:text-amber-300"
       >
         {isStreaming ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin text-amber-400" />
@@ -153,7 +153,7 @@ function ThinkingBlock({ text, isStreaming }: { text: string; isStreaming: boole
         {expanded ? <ChevronDown className="ml-auto h-3 w-3" /> : <ChevronRight className="ml-auto h-3 w-3" />}
       </button>
       {expanded && (
-        <div className="border-t border-amber-500/10 px-3 py-2 text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">
+        <div className="border-t border-amber-500/10 px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
           {text}
         </div>
       )}
@@ -172,41 +172,43 @@ function InlineToolCard({ invocation }: { invocation: ToolInvocationPart['toolIn
     <div className="my-1.5 rounded-lg border bg-muted/30">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-muted/50 transition-colors"
+        className="flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-muted/50"
       >
         <span className="text-muted-foreground">{toolIcon(invocation.toolName)}</span>
         <span className="font-medium">{toolDisplayName(invocation.toolName)}</span>
-        {keyArg && <span className="text-muted-foreground truncate max-w-[200px]">{keyArg}</span>}
+        {keyArg && <span className="max-w-[200px] truncate text-muted-foreground">{keyArg}</span>}
         <span className="ml-auto">
           {isRunning ? (
-            <Badge variant="secondary" className="gap-1 text-[10px] px-1.5 py-0">
+            <Badge variant="secondary" className="gap-1 px-1.5 py-0 text-[10px]">
               <Loader2 className="h-2.5 w-2.5 animate-spin" />
               Running
             </Badge>
           ) : (
-            <Badge variant="outline" className="gap-1 text-[10px] px-1.5 py-0 text-green-600 border-green-600/30">
+            <Badge variant="outline" className="gap-1 border-green-600/30 px-1.5 py-0 text-[10px] text-green-600">
               <CheckCircle2 className="h-2.5 w-2.5" />
               Done
             </Badge>
           )}
         </span>
-        {expanded ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />}
+        {expanded ? (
+          <ChevronDown className="h-3 w-3 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="h-3 w-3 text-muted-foreground" />
+        )}
       </button>
       {expanded && (
-        <div className="border-t border-border/50 px-3 py-2 space-y-2">
+        <div className="space-y-2 border-t border-border/50 px-3 py-2">
           <div>
-            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Arguments</p>
+            <p className="mb-1 text-[10px] font-medium tracking-wide text-muted-foreground uppercase">Arguments</p>
             <pre className="max-h-32 overflow-auto rounded bg-muted p-2 font-mono text-xs">
               {JSON.stringify(invocation.args, null, 2)}
             </pre>
           </div>
           {invocation.state === 'result' && invocation.result !== undefined && (
             <div>
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Result</p>
+              <p className="mb-1 text-[10px] font-medium tracking-wide text-muted-foreground uppercase">Result</p>
               <pre className="max-h-48 overflow-auto rounded bg-muted p-2 font-mono text-xs">
-                {typeof invocation.result === 'string'
-                  ? invocation.result
-                  : JSON.stringify(invocation.result, null, 2)}
+                {typeof invocation.result === 'string' ? invocation.result : JSON.stringify(invocation.result, null, 2)}
               </pre>
             </div>
           )}
@@ -220,9 +222,9 @@ function InlineToolCard({ invocation }: { invocation: ToolInvocationPart['toolIn
 
 function StepDivider({ stepNumber }: { stepNumber: number }) {
   return (
-    <div className="flex items-center gap-3 my-3">
+    <div className="my-3 flex items-center gap-3">
       <div className="flex-1 border-t border-border/40" />
-      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Step {stepNumber}</span>
+      <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">Step {stepNumber}</span>
       <div className="flex-1 border-t border-border/40" />
     </div>
   );
@@ -294,8 +296,8 @@ function ToolActivityCard({ invocation }: { invocation: ToolInvocationPart['tool
 
 const markdownComponents = {
   h1: ({ children }: { children?: ReactNode }) => <h1 className="mb-2 text-base font-bold">{children}</h1>,
-  h2: ({ children }: { children?: ReactNode }) => <h2 className="mb-2 mt-3 text-sm font-bold">{children}</h2>,
-  h3: ({ children }: { children?: ReactNode }) => <h3 className="mb-1 mt-2 text-sm font-semibold">{children}</h3>,
+  h2: ({ children }: { children?: ReactNode }) => <h2 className="mt-3 mb-2 text-sm font-bold">{children}</h2>,
+  h3: ({ children }: { children?: ReactNode }) => <h3 className="mt-2 mb-1 text-sm font-semibold">{children}</h3>,
   p: ({ children }: { children?: ReactNode }) => <p className="mb-2 last:mb-0">{children}</p>,
   ul: ({ children }: { children?: ReactNode }) => <ul className="mb-2 ml-4 list-disc space-y-1">{children}</ul>,
   ol: ({ children }: { children?: ReactNode }) => <ol className="mb-2 ml-4 list-decimal space-y-1">{children}</ol>,
@@ -326,9 +328,7 @@ const markdownComponents = {
   th: ({ children }: { children?: ReactNode }) => (
     <th className="border-b border-border/50 px-2 py-1 text-left font-semibold">{children}</th>
   ),
-  td: ({ children }: { children?: ReactNode }) => (
-    <td className="border-b border-border/30 px-2 py-1">{children}</td>
-  ),
+  td: ({ children }: { children?: ReactNode }) => <td className="border-b border-border/30 px-2 py-1">{children}</td>
 };
 
 /* ── Main Component ──────────────────────────────────────── */
@@ -424,23 +424,14 @@ export function ActionsPanel({ agentId }: { agentId?: string }) {
                         if (!rp.reasoning?.trim()) return null;
                         const isStreamingThinking = isLastMessage && isLoading && i === parts.length - 1;
                         return (
-                          <ThinkingBlock
-                            key={`reasoning-${i}`}
-                            text={rp.reasoning}
-                            isStreaming={isStreamingThinking}
-                          />
+                          <ThinkingBlock key={`reasoning-${i}`} text={rp.reasoning} isStreaming={isStreamingThinking} />
                         );
                       }
 
                       // ── Tool invocations ──
                       if (part.type === 'tool-invocation') {
                         const tp = part as ToolInvocationPart;
-                        return (
-                          <InlineToolCard
-                            key={tp.toolInvocation.toolCallId}
-                            invocation={tp.toolInvocation}
-                          />
-                        );
+                        return <InlineToolCard key={tp.toolInvocation.toolCallId} invocation={tp.toolInvocation} />;
                       }
 
                       // ── Text parts ──
@@ -448,7 +439,10 @@ export function ActionsPanel({ agentId }: { agentId?: string }) {
                         const tp = part as TextPart;
                         if (!tp.text?.trim()) return null;
                         return (
-                          <div key={`text-${i}`} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div
+                            key={`text-${i}`}
+                            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                          >
                             <div
                               className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
                                 message.role === 'user'

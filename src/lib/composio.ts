@@ -252,11 +252,11 @@ export async function executeComposioTool(agentId: string, actionName: string, a
   if (appPrefix === 'instagram' && !filteredArgs.ig_user_id && connectedAccountId) {
     console.log(`[composio] Fetching ig_user_id for Instagram action...`);
     try {
-      const userInfoResult = await entity.execute({
+      const userInfoResult = (await entity.execute({
         actionName: 'INSTAGRAM_GET_USER_INFO',
         params: {},
         connectedAccountId
-      }) as { data?: { id?: string }; successful?: boolean };
+      })) as { data?: { id?: string }; successful?: boolean };
 
       if (userInfoResult.successful && userInfoResult.data?.id) {
         filteredArgs.ig_user_id = userInfoResult.data.id;
@@ -267,7 +267,10 @@ export async function executeComposioTool(agentId: string, actionName: string, a
     }
   }
 
-  console.log(`[composio] executeComposioTool: action=${actionName}, connectedAccountId=${connectedAccountId}, args=`, filteredArgs);
+  console.log(
+    `[composio] executeComposioTool: action=${actionName}, connectedAccountId=${connectedAccountId}, args=`,
+    filteredArgs
+  );
 
   const result = await entity.execute({
     actionName,

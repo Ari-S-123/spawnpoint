@@ -120,7 +120,6 @@ function extractActivityFeed(messages: { parts?: MessagePart[] }[]): ActivityEnt
   return entries;
 }
 
-
 function toolDisplayName(name: string) {
   if (name === 'search_tools') return 'Search Tools';
   if (name === 'execute_tool') return 'Execute Tool';
@@ -155,19 +154,18 @@ function toolKeyArg(inv: ToolInvocationPart['toolInvocation']): string | null {
 /* ── ThinkingBlock ───────────────────────────────────────── */
 
 function ThinkingBlock({ text, isStreaming }: { text: string; isStreaming: boolean }) {
-  const [expanded, setExpanded] = useState(isStreaming);
-
-  // Auto-expand when streaming starts
-  useEffect(() => {
-    if (isStreaming) setExpanded(true);
-  }, [isStreaming]);
+  // When streaming, always show expanded; user can only toggle when not streaming
+  const [manualExpanded, setManualExpanded] = useState(false);
+  const expanded = isStreaming || manualExpanded;
 
   const previewText = text.length > 120 ? text.slice(0, 120) + '...' : text;
 
   return (
-    <div className={`my-2 rounded-lg border border-amber-500/20 bg-amber-500/5 ${isStreaming ? 'ring-1 ring-amber-500/30' : ''}`}>
+    <div
+      className={`my-2 rounded-lg border border-amber-500/20 bg-amber-500/5 ${isStreaming ? 'ring-1 ring-amber-500/30' : ''}`}
+    >
       <button
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => setManualExpanded(!manualExpanded)}
         className="flex w-full items-center gap-2 px-3 py-2 text-xs text-amber-400/80 transition-colors hover:text-amber-300"
       >
         {isStreaming ? (
@@ -177,14 +175,20 @@ function ThinkingBlock({ text, isStreaming }: { text: string; isStreaming: boole
         )}
         <span className="font-medium">{isStreaming ? 'Thinking...' : 'Reasoning'}</span>
         {!expanded && text && (
-          <span className="ml-1 truncate max-w-[300px] text-amber-400/50 font-normal">{previewText}</span>
+          <span className="ml-1 max-w-[300px] truncate font-normal text-amber-400/50">{previewText}</span>
         )}
-        {expanded ? <ChevronDown className="ml-auto h-3 w-3 shrink-0" /> : <ChevronRight className="ml-auto h-3 w-3 shrink-0" />}
+        {expanded ? (
+          <ChevronDown className="ml-auto h-3 w-3 shrink-0" />
+        ) : (
+          <ChevronRight className="ml-auto h-3 w-3 shrink-0" />
+        )}
       </button>
       {expanded && (
         <div className="border-t border-amber-500/10 px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
           {text}
-          {isStreaming && <span className="inline-block w-1.5 h-3 bg-amber-400/60 animate-pulse ml-0.5 align-text-bottom" />}
+          {isStreaming && (
+            <span className="ml-0.5 inline-block h-3 w-1.5 animate-pulse bg-amber-400/60 align-text-bottom" />
+          )}
         </div>
       )}
     </div>
@@ -199,7 +203,9 @@ function InlineToolCard({ invocation }: { invocation: ToolInvocationPart['toolIn
   const isRunning = invocation.state !== 'result';
 
   return (
-    <div className={`my-1.5 rounded-lg border bg-muted/30 ${isRunning ? 'border-blue-500/30 ring-1 ring-blue-500/10' : ''}`}>
+    <div
+      className={`my-1.5 rounded-lg border bg-muted/30 ${isRunning ? 'border-blue-500/30 ring-1 ring-blue-500/10' : ''}`}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-muted/50"
@@ -384,7 +390,7 @@ export function ActionsPanel({ agentId }: { agentId?: string }) {
     }
   }, [messages]);
 
-  const activityFeed = extractActivityFeed(messages);
+  const activityFeed = useMemo(() => extractActivityFeed(messages), [messages]);
   const hasActivity = activityFeed.length > 0;
 
   function handleSubmit(e: FormEvent) {
@@ -540,7 +546,9 @@ export function ActionsPanel({ agentId }: { agentId?: string }) {
                   return (
                     <div key={entry.id} className="flex items-center gap-2 py-2">
                       <div className="flex-1 border-t border-border/30" />
-                      <span className="text-[9px] font-medium text-muted-foreground/60 uppercase tracking-widest">Step {entry.stepNumber}</span>
+                      <span className="text-[9px] font-medium tracking-widest text-muted-foreground/60 uppercase">
+                        Step {entry.stepNumber}
+                      </span>
                       <div className="flex-1 border-t border-border/30" />
                     </div>
                   );
@@ -551,19 +559,15 @@ export function ActionsPanel({ agentId }: { agentId?: string }) {
                     <div key={entry.id} className="flex gap-2 py-1.5">
                       <div className="mt-0.5 flex flex-col items-center">
                         <Brain className="h-3 w-3 text-amber-400/70" />
-                        <div className="mt-1 flex-1 w-px bg-border/30" />
+                        <div className="mt-1 w-px flex-1 bg-border/30" />
                       </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3">
-                        {entry.text}
-                      </p>
+                      <p className="line-clamp-3 text-[11px] leading-relaxed text-muted-foreground">{entry.text}</p>
                     </div>
                   );
                 }
 
                 if (entry.kind === 'tool') {
-                  return (
-                    <ToolActivityCard key={entry.id} invocation={entry.invocation} />
-                  );
+                  return <ToolActivityCard key={entry.id} invocation={entry.invocation} />;
                 }
 
                 return null;

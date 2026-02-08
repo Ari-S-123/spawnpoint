@@ -10,7 +10,9 @@ import { AgentStatusGrid } from '@/components/agents/agent-status-grid';
 import { CredentialsTable } from '@/components/vault/credentials-table';
 import { InboxViewer } from '@/components/inbox/inbox-viewer';
 import { TaskActivityLog } from '@/components/agents/task-activity-log';
-import { Bot, Shield, Activity } from 'lucide-react';
+import { LiveViewPanel } from '@/components/agents/live-view-panel';
+import { TaskStreamProvider } from '@/components/agents/task-stream-provider';
+import { Bot, Shield, Activity, Monitor } from 'lucide-react';
 
 const tabTriggerClass = 'data-[state=active]:text-amber-300';
 
@@ -63,44 +65,54 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
           </span>
         </div>
 
-        <Tabs defaultValue="overview">
-          <TabsList className="mb-6">
-            <TabsTrigger value="overview" className={`gap-1.5 ${tabTriggerClass}`}>
-              <Activity className="h-3.5 w-3.5" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="vault" className={`gap-1.5 ${tabTriggerClass}`}>
-              <Shield className="h-3.5 w-3.5" />
-              Credentials
-            </TabsTrigger>
-            <TabsTrigger value="activity" className={`gap-1.5 ${tabTriggerClass}`}>
-              <Bot className="h-3.5 w-3.5" />
-              Activity
-            </TabsTrigger>
-          </TabsList>
+        <TaskStreamProvider agentId={agent.id}>
+          <Tabs defaultValue="overview">
+            <TabsList className="mb-6">
+              <TabsTrigger value="overview" className={`gap-1.5 ${tabTriggerClass}`}>
+                <Activity className="h-3.5 w-3.5" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="live" className={`gap-1.5 ${tabTriggerClass}`}>
+                <Monitor className="h-3.5 w-3.5" />
+                Live View
+              </TabsTrigger>
+              <TabsTrigger value="vault" className={`gap-1.5 ${tabTriggerClass}`}>
+                <Shield className="h-3.5 w-3.5" />
+                Credentials
+              </TabsTrigger>
+              <TabsTrigger value="activity" className={`gap-1.5 ${tabTriggerClass}`}>
+                <Bot className="h-3.5 w-3.5" />
+                Activity
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="overview" className="mt-0">
-            <div className="grid gap-6 lg:grid-cols-[1fr_220px]">
-              {/* Inbox — main content */}
-              <div>
-                <InboxViewer inboxId={agent.inboxId} />
+            <TabsContent value="overview" className="mt-0">
+              <div className="grid gap-6 lg:grid-cols-[1fr_220px]">
+                {/* Inbox — main content */}
+                <div>
+                  <InboxViewer inboxId={agent.inboxId} />
+                </div>
+
+                {/* Compact connection status */}
+                <div>
+                  <AgentStatusGrid initialTasks={serializedTasks} />
+                </div>
               </div>
+            </TabsContent>
 
-              {/* Compact connection status */}
-              <div>
-                <AgentStatusGrid agentId={agent.id} initialTasks={serializedTasks} />
-              </div>
-            </div>
-          </TabsContent>
+            <TabsContent value="live" className="mt-0">
+              <LiveViewPanel />
+            </TabsContent>
 
-          <TabsContent value="vault" className="mt-0">
-            <CredentialsTable agentId={agent.id} />
-          </TabsContent>
+            <TabsContent value="vault" className="mt-0">
+              <CredentialsTable agentId={agent.id} />
+            </TabsContent>
 
-          <TabsContent value="activity" className="mt-0">
-            <TaskActivityLog agentId={agent.id} />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="activity" className="mt-0">
+              <TaskActivityLog />
+            </TabsContent>
+          </Tabs>
+        </TaskStreamProvider>
       </div>
     </>
   );

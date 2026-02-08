@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useTaskStream } from '@/hooks/use-task-stream';
+import { useTaskStreamContext } from '@/components/agents/task-stream-provider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -33,11 +33,14 @@ const PLATFORMS: { key: Platform; name: string }[] = [
   { key: 'twitter', name: 'X / Twitter' }
 ];
 
-export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; initialTasks: Task[] }) {
-  const { events, isConnected } = useTaskStream(agentId);
+export function AgentStatusGrid({ initialTasks }: { initialTasks: Task[] }) {
+  const { events, isConnected } = useTaskStreamContext();
 
   const tasksByPlatform = useMemo(() => {
-    const map = new Map<string, { status: string; message?: string; browserSessionId?: string | null }>();
+    const map = new Map<
+      string,
+      { status: string; message?: string; browserSessionId?: string | null; liveViewUrl?: string }
+    >();
     for (const task of initialTasks) {
       map.set(task.platform, {
         status: task.status,
@@ -49,7 +52,8 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
       map.set(event.platform, {
         status: event.status,
         message: event.message,
-        browserSessionId: event.browserSessionId ?? map.get(event.platform)?.browserSessionId
+        browserSessionId: event.browserSessionId ?? map.get(event.platform)?.browserSessionId,
+        liveViewUrl: event.liveViewUrl ?? map.get(event.platform)?.liveViewUrl
       });
     }
     return map;

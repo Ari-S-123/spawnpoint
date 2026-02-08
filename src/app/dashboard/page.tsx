@@ -35,12 +35,7 @@ export default async function DashboardPage() {
         <div>
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2
-                className="text-lg font-semibold tracking-tight"
-                style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
-              >
-                Your Agents
-              </h2>
+              <h2 className="text-lg font-semibold tracking-tight">Your Agents</h2>
               {agentList.length > 0 && (
                 <p className="mt-0.5 text-sm text-muted-foreground">
                   {agentList.length} agent{agentList.length !== 1 ? 's' : ''} configured

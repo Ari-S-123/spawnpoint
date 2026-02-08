@@ -5,7 +5,7 @@ import { db } from '@/db';
 import { setupTasks } from '@/db/schema';
 import { and, eq } from 'drizzle-orm';
 import { PLATFORM_CONFIGS } from '@/lib/platforms';
-import { createBrowserSession, performSignup, injectOTP, takeScreenshot } from '@/lib/browser';
+import { createBrowserSession, performSignup, injectOTP, takeScreenshot, getSessionLiveViewUrl } from '@/lib/browser';
 import { waitForVerification } from '@/lib/agentmail';
 import { getCredential } from '@/lib/vault';
 import { emitTaskUpdate } from '@/lib/events';
@@ -83,6 +83,14 @@ async function executePlatformSignup(
     const session = await createBrowserSession();
     browser = session.browser;
 
+    // Fetch live view URL for iframe embedding (non-blocking failure)
+    let liveViewUrl: string | undefined;
+    try {
+      liveViewUrl = await getSessionLiveViewUrl(session.sessionId);
+    } catch {
+      // Live view unavailable — continue without it
+    }
+
     // Store session ID for live view
     await db
       .update(setupTasks)
@@ -96,6 +104,7 @@ async function executePlatformSignup(
       status: 'in_progress',
       message: `Browser session created. Navigating to ${config.signupUrl}...`,
       browserSessionId: session.sessionId,
+      liveViewUrl,
       timestamp: new Date().toISOString()
     });
 
@@ -115,6 +124,7 @@ async function executePlatformSignup(
         status: 'needs_human',
         message: `CAPTCHA detected on ${platform}. Manual intervention required.`,
         browserSessionId: session.sessionId,
+        liveViewUrl,
         timestamp: new Date().toISOString()
       });
 

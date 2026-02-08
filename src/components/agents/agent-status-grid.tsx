@@ -1,9 +1,10 @@
 'use client';
 
-import { useTaskStream } from '@/hooks/use-task-stream';
-import { PlatformStatusCard } from '@/components/agents/platform-status-card';
+import { useTaskStreamContext } from '@/components/agents/task-stream-provider';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { Wifi, WifiOff } from 'lucide-react';
+import { PlatformStatusCard } from '@/components/agents/platform-status-card';
 import type { Platform } from '@/types';
 
 type Task = {
@@ -14,22 +15,23 @@ type Task = {
   errorMessage: string | null;
 };
 
-export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; initialTasks: Task[] }) {
-  const { events, isConnected } = useTaskStream(agentId);
+// Merge SSE events with initial task data to get latest status per platform
+const tasksByPlatform = new Map<
+  string,
+  { status: string; message?: string; browserSessionId?: string | null; screenshot?: string | null }
+>();
 
-  // Merge SSE events with initial task data to get latest status per platform
-  const tasksByPlatform = new Map<
-    string,
-    { status: string; message?: string; browserSessionId?: string | null; screenshot?: string | null }
-  >();
+export function AgentStatusGrid({ initialTasks }: { initialTasks: Task[] }) {
+  const { events, isConnected } = useTaskStreamContext();
 
-  // Start with initial task data
+  // Seed from initial tasks
   for (const task of initialTasks) {
-    tasksByPlatform.set(task.platform, {
-      status: task.status,
-      message: task.errorMessage ?? undefined,
-      browserSessionId: task.browserSessionId
-    });
+    if (!tasksByPlatform.has(task.platform)) {
+      tasksByPlatform.set(task.platform, {
+        status: task.status,
+        browserSessionId: task.browserSessionId
+      });
+    }
   }
 
   // Overlay with latest SSE events (most recent wins)
@@ -44,11 +46,19 @@ export function AgentStatusGrid({ agentId, initialTasks }: { agentId: string; in
   }
 
   return (
-    <div>
-      <div className="mb-4 flex items-center gap-2">
-        <Badge variant={isConnected ? 'default' : 'secondary'} className="gap-1">
-          {isConnected ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
-          {isConnected ? 'Live' : 'Connecting...'}
+    <div className="rounded-xl border border-zinc-800/50 bg-card/50">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-zinc-800/30 px-4 py-2.5">
+        <span className="text-xs font-medium text-muted-foreground">Connections</span>
+        <Badge
+          variant={isConnected ? 'default' : 'secondary'}
+          className={cn(
+            'h-5 gap-1 px-1.5 text-[10px]',
+            isConnected && 'border border-amber-500/25 bg-amber-500/15 text-amber-300'
+          )}
+        >
+          {isConnected ? <Wifi className="h-2.5 w-2.5" /> : <WifiOff className="h-2.5 w-2.5" />}
+          {isConnected ? 'Live' : '...'}
         </Badge>
       </div>
 

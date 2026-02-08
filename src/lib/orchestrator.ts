@@ -10,6 +10,7 @@ import {
   injectOTP,
   takeScreenshot,
   closeSession,
+  getSessionLiveViewUrl,
   type StagehandSession
 } from '@/lib/browser';
 import { waitForVerification } from '@/lib/agentmail';
@@ -138,7 +139,7 @@ async function executePlatformSignup(
       });
 
       const verification = await waitForVerification(inboxId, 'instagram');
-      const code = verification.type === 'otp' ? verification.value : verification.otp ?? '';
+      const code = verification.type === 'otp' ? verification.value : (verification.otp ?? '');
 
       if (!code) {
         throw new Error('Could not extract confirmation code from Instagram email');
@@ -183,6 +184,14 @@ async function executePlatformSignup(
   try {
     session = await createStagehandSession();
 
+    // Fetch live view URL for iframe embedding (non-blocking failure)
+    let liveViewUrl: string | undefined;
+    try {
+      liveViewUrl = await getSessionLiveViewUrl(session.sessionId);
+    } catch {
+      // Live view unavailable — continue without it
+    }
+
     // Store session ID for live view
     await db
       .update(setupTasks)
@@ -196,11 +205,19 @@ async function executePlatformSignup(
       status: 'in_progress',
       message: `Browser session created. Navigating to ${config.signupUrl}...`,
       browserSessionId: session.sessionId,
+      liveViewUrl,
       timestamp: new Date().toISOString()
     });
 
     // Phase 1: Fill and submit the signup form
-    const signupResult = await performSignup(session.stagehand, session.page, config, email, credential.password, agentName);
+    const signupResult = await performSignup(
+      session.stagehand,
+      session.page,
+      config,
+      email,
+      credential.password,
+      agentName
+    );
 
     // Screenshot after form submission attempt
     const postSubmitScreenshot = await takeScreenshot(session.page).catch(() => undefined);
@@ -300,9 +317,7 @@ async function executePlatformSignup(
     // Final screenshot to confirm where we ended up
     const finalScreenshot = await takeScreenshot(session.page).catch(() => undefined);
     const finalUrl = session.page.url();
-    console.log(
-      `[${platform.toUpperCase()}] Final state — URL: ${finalUrl}, onDashboard: ${onDashboard}`
-    );
+    console.log(`[${platform.toUpperCase()}] Final state — URL: ${finalUrl}, onDashboard: ${onDashboard}`);
 
     if (onDashboard) {
       await db

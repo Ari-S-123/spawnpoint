@@ -24,7 +24,7 @@ export function HeroSection() {
           className="mb-6 text-xs font-medium tracking-[0.3em] text-amber-400/80 uppercase"
           style={{ animationDelay: '0ms' }}
         >
-          AI Agent Infrastructure
+          Self-Healing Autonomous Onboarding
         </p>
 
         {/* Headline */}

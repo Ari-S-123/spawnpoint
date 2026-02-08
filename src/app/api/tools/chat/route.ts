@@ -26,9 +26,7 @@ export async function POST(request: Request) {
       const integrationRows = await getAgentIntegrations(agentId);
       const connected = integrationRows.filter((r) => r.status === 'connected');
       if (connected.length > 0) {
-        const appNames = connected
-          .map((r) => COMPOSIO_APP_CONFIG[r.app]?.name ?? r.app)
-          .join(', ');
+        const appNames = connected.map((r) => COMPOSIO_APP_CONFIG[r.app]?.name ?? r.app).join(', ');
         connectedAppsSection =
           `\n\n**Connected Composio apps for this agent:** ${appNames}\n` +
           'These apps are fully authenticated via OAuth. Composio handles ALL auth details (account IDs, tokens, credentials) automatically.\n' +
@@ -133,7 +131,7 @@ export async function POST(request: Request) {
       }),
       composio_list_tools: tool({
         description:
-          'List available Composio tools/actions for this agent\'s connected OAuth apps (Gmail, GitHub, etc.). ' +
+          "List available Composio tools/actions for this agent's connected OAuth apps (Gmail, GitHub, etc.). " +
           'Optionally filter by app names.',
         inputSchema: z.object({
           apps: z

@@ -11,7 +11,7 @@ const steps = [
     number: '02',
     title: 'Automate',
     description:
-      'Cloud browsers sign up across all six platforms simultaneously, with AI-guided recovery if anything breaks.',
+      'Cloud browsers sign up across all multiple platforms simultaneously, with AI-guided recovery if anything breaks.',
     icon: Cpu
   },
   {

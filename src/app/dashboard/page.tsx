@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { agents } from '@/db/schema';
-import { auth } from '@/lib/auth/server';
+import { getCachedSession } from '@/lib/auth/session';
 import { eq, desc } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { Header } from '@/components/layout/header';
@@ -8,7 +8,7 @@ import { CreateAgentForm } from '@/components/agents/create-agent-form';
 import { AgentListTable } from '@/components/agents/agent-list-table';
 
 export default async function DashboardPage() {
-  const { data: session } = await auth.getSession();
+  const { data: session } = await getCachedSession();
   if (!session?.user) {
     redirect('/auth/sign-in');
   }
@@ -18,20 +18,31 @@ export default async function DashboardPage() {
     .from(agents)
     .where(eq(agents.operatorId, session.user.id))
     .orderBy(desc(agents.createdAt));
+  const agentCount = agentList.length;
 
   const serialized = agentList.map((a) => ({
-    ...a,
-    createdAt: a.createdAt.toISOString(),
-    updatedAt: a.updatedAt.toISOString()
+    id: a.id,
+    name: a.name,
+    email: a.email,
+    createdAt: a.createdAt.toISOString()
   }));
 
   return (
     <>
-      <Header title="Dashboard" />
+      <Header breadcrumbs={[{ label: 'Agents' }]} />
       <div className="flex flex-col gap-6 p-6">
-        <CreateAgentForm />
+        <CreateAgentForm agentCount={agentCount} />
         <div>
-          <h2 className="mb-4 text-lg font-semibold">Your Agents</h2>
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">Your Agents</h2>
+              {agentList.length > 0 && (
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {agentList.length} agent{agentList.length !== 1 ? 's' : ''} configured
+                </p>
+              )}
+            </div>
+          </div>
           <AgentListTable agents={serialized} />
         </div>
       </div>

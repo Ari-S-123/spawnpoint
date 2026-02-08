@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 const EXAMPLES = [
@@ -104,25 +104,28 @@ function App() {
   const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
 
-  const handleSearch = async (e) => {
-    if (e) e.preventDefault();
-    if (!query.trim()) return;
+  const handleSearch = useCallback(
+    async (e) => {
+      if (e) e.preventDefault();
+      if (!query.trim()) return;
 
-    setLoading(true);
-    setError(null);
-    setSearched(true);
+      setLoading(true);
+      setError(null);
+      setSearched(true);
 
-    try {
-      const resp = await fetch(`http://localhost:8000/search?query=${encodeURIComponent(query)}&limit=10`);
-      if (!resp.ok) throw new Error('Failed to fetch results');
-      const data = await resp.json();
-      setResults(data.results || []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const resp = await fetch(`http://localhost:8000/search?query=${encodeURIComponent(query)}&limit=10`);
+        if (!resp.ok) throw new Error('Failed to fetch results');
+        const data = await resp.json();
+        setResults(data.results || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [query]
+  );
 
   const handleExampleClick = (q) => {
     setQuery(q);
@@ -132,7 +135,7 @@ function App() {
     if (query && !searched && EXAMPLES.includes(query)) {
       handleSearch();
     }
-  }, [query]);
+  }, [query, searched, handleSearch]);
 
   return (
     <div className="app">
@@ -171,7 +174,7 @@ function App() {
 
         {!loading && !error && searched && results.length === 0 && (
           <div className="empty-state">
-            <p>No tools found matching "{query}"</p>
+            <p>No tools found matching &quot;{query}&quot;</p>
           </div>
         )}
 

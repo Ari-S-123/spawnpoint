@@ -19,9 +19,7 @@ export async function createAgentEmail(agentName: string): Promise<{ inbox_id: s
   };
 }
 
-export type VerificationResult =
-  | { type: 'otp'; value: string }
-  | { type: 'link'; value: string; otp?: string };
+export type VerificationResult = { type: 'otp'; value: string } | { type: 'link'; value: string; otp?: string };
 
 export async function waitForVerification(
   inboxId: string,

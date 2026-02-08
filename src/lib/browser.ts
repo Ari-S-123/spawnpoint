@@ -1,5 +1,8 @@
 import { Stagehand, type Page } from '@browserbasehq/stagehand';
+import Browserbase from '@browserbasehq/sdk';
 import type { PlatformConfig } from '@/types';
+
+const bb = new Browserbase({ apiKey: process.env.BROWSERBASE_API_KEY! });
 
 export type StagehandSession = {
   stagehand: Stagehand;
@@ -76,25 +79,21 @@ async function hasLeftSignupPage(stagehand: Stagehand, page: Page, signupUrl: st
  * Verify we've reached the platform dashboard / logged-in state.
  * Uses stagehand.observe with the platform's success indicator.
  */
-export async function verifyOnDashboard(
-  stagehand: Stagehand,
-  page: Page,
-  config: PlatformConfig
-): Promise<boolean> {
+export async function verifyOnDashboard(stagehand: Stagehand, page: Page, config: PlatformConfig): Promise<boolean> {
   const currentUrl = page.url();
   console.log(`[BROWSER] [${config.platform}] Verifying dashboard — current URL: ${currentUrl}`);
 
   // Ask the agent to visually check if the success indicator is met
   const dashboardElements = await stagehand.observe(
     `Check if this page looks like a logged-in dashboard, onboarding page, or home feed. ` +
-    `Success criteria: ${config.successIndicator}. ` +
-    `Find any elements that indicate the user is logged in (dashboard nav, user avatar, project list, feed content, onboarding wizard).`
+      `Success criteria: ${config.successIndicator}. ` +
+      `Find any elements that indicate the user is logged in (dashboard nav, user avatar, project list, feed content, onboarding wizard).`
   );
 
   const isOnDashboard = dashboardElements.length > 0;
   console.log(
     `[BROWSER] [${config.platform}] Dashboard verification: ${isOnDashboard ? 'YES — on dashboard' : 'NO — not on dashboard yet'} ` +
-    `(found ${dashboardElements.length} dashboard indicators)`
+      `(found ${dashboardElements.length} dashboard indicators)`
   );
 
   return isOnDashboard;
@@ -117,7 +116,7 @@ export async function performSignup(
 
   console.log(
     `[BROWSER] [${config.platform}] Agent signup — name="${displayName}" username="${username}" ` +
-    `birthday=${birthday.month}/${birthday.day}/${birthday.year}`
+      `birthday=${birthday.month}/${birthday.day}/${birthday.year}`
   );
 
   await page.goto(config.signupUrl, {
@@ -198,11 +197,7 @@ export async function performSignup(
  * After OTP injection or verification link, run a second agent pass
  * to navigate from the verification page to the actual dashboard.
  */
-export async function navigateToDashboard(
-  stagehand: Stagehand,
-  page: Page,
-  config: PlatformConfig
-): Promise<boolean> {
+export async function navigateToDashboard(stagehand: Stagehand, page: Page, config: PlatformConfig): Promise<boolean> {
   console.log(`[BROWSER] [${config.platform}] Running post-verification agent to reach dashboard...`);
 
   const agent = stagehand.agent({
@@ -224,7 +219,9 @@ export async function navigateToDashboard(
     maxSteps: 20
   });
 
-  console.log(`[BROWSER] [${config.platform}] Dashboard navigation — success=${result.success}, message="${result.message}"`);
+  console.log(
+    `[BROWSER] [${config.platform}] Dashboard navigation — success=${result.success}, message="${result.message}"`
+  );
 
   // Verify we actually made it
   const onDashboard = await verifyOnDashboard(stagehand, page, config);
@@ -237,6 +234,11 @@ export async function injectOTP(stagehand: Stagehand, otp: string, instruction?:
   });
 
   await stagehand.act('click the verify or confirm or submit button');
+}
+
+export async function getSessionLiveViewUrl(sessionId: string): Promise<string> {
+  const debugInfo = await bb.sessions.debug(sessionId);
+  return debugInfo.debuggerFullscreenUrl;
 }
 
 export async function takeScreenshot(page: Page): Promise<string> {

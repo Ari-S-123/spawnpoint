@@ -137,12 +137,7 @@ function encryptPassword(password: string, pubKeyHex: string, keyId: number): st
   const hashBytes = nacl.hash(nonceInput);
   const sealNonce = hashBytes.slice(0, 24);
 
-  const encrypted = nacl.box(
-    aesKey,
-    sealNonce,
-    new Uint8Array(pubKeyBytes),
-    ephemeral.secretKey
-  );
+  const encrypted = nacl.box(aesKey, sealNonce, new Uint8Array(pubKeyBytes), ephemeral.secretKey);
   // Sealed box = ephemeral public key + encrypted message
   const sealedAesKey = new Uint8Array(ephemeral.publicKey.length + encrypted.length);
   sealedAesKey.set(ephemeral.publicKey, 0);
@@ -211,10 +206,9 @@ async function loadSignupPage(): Promise<SessionTokens> {
     '';
 
   // Extract other tokens
-  const hsi =
-    extractFromHtml(html, /"hsi"\s*:\s*"(\d+)"/) ?? extractFromHtml(html, /__hsi=(\d+)/) ?? '';
+  const hsi = extractFromHtml(html, /"hsi"\s*:\s*"(\d+)"/) ?? extractFromHtml(html, /__hsi=(\d+)/) ?? '';
 
-  let rev =
+  const rev =
     extractFromHtml(html, /"client_revision"\s*:\s*(\d+)/) ??
     extractFromHtml(html, /__rev=(\d+)/) ??
     extractFromHtml(html, /"rev"\s*:\s*(\d+)/) ??
@@ -265,9 +259,12 @@ async function loadSignupPage(): Promise<SessionTokens> {
   };
 }
 
-async function fetchSharedData(
-  cookies: Record<string, string>
-): Promise<{ pubKeyHex: string | null; keyId: number | null; lsd: string | null; cookies: Record<string, string> } | null> {
+async function fetchSharedData(cookies: Record<string, string>): Promise<{
+  pubKeyHex: string | null;
+  keyId: number | null;
+  lsd: string | null;
+  cookies: Record<string, string>;
+} | null> {
   try {
     const resp = await fetch('https://www.instagram.com/data/shared_data/', {
       headers: {
@@ -490,7 +487,10 @@ export async function registerInstagramAccount(
   // Step 1: Load signup page and extract tokens
   progress('Loading signup page', 'GET instagram.com/accounts/emailsignup/ — extracting CSRF, LSD, encryption keys...');
   const tokens = await loadSignupPage();
-  progress('Tokens extracted', `CSRF: ${tokens.csrfToken ? 'OK' : 'missing'}, LSD: ${tokens.lsdToken ? 'OK' : 'missing'}, encryption key: ${tokens.pubKeyHex ? 'OK' : 'missing'}`);
+  progress(
+    'Tokens extracted',
+    `CSRF: ${tokens.csrfToken ? 'OK' : 'missing'}, LSD: ${tokens.lsdToken ? 'OK' : 'missing'}, encryption key: ${tokens.pubKeyHex ? 'OK' : 'missing'}`
+  );
 
   // Step 2: Encrypt password
   let encPassword: string;
@@ -548,12 +548,7 @@ export async function registerInstagramAccount(
     }
   };
 
-  const result = await postGraphql(
-    tokens,
-    'useCAARegistrationFormSubmitMutation',
-    DOC_ID_FORM_SUBMIT,
-    variables
-  );
+  const result = await postGraphql(tokens, 'useCAARegistrationFormSubmitMutation', DOC_ID_FORM_SUBMIT, variables);
 
   const data = result.data as Record<string, unknown> | undefined;
   const regResult = data?.caa_registration_homepage_submit as Record<string, unknown> | undefined;
@@ -616,14 +611,12 @@ export async function confirmInstagramAccount(
     }
   };
 
-  progress('Submitting confirmation code', `POST /api/graphql — useCAAFBConfirmationFormSubmitMutation (code: ${code})`);
-
-  const result = await postGraphql(
-    tokens,
-    'useCAAFBConfirmationFormSubmitMutation',
-    DOC_ID_CONFIRMATION,
-    variables
+  progress(
+    'Submitting confirmation code',
+    `POST /api/graphql — useCAAFBConfirmationFormSubmitMutation (code: ${code})`
   );
+
+  const result = await postGraphql(tokens, 'useCAAFBConfirmationFormSubmitMutation', DOC_ID_CONFIRMATION, variables);
 
   const data = result.data as Record<string, unknown> | undefined;
   const confirm = data?.xfb_caa_registration_confirmation_submit as Record<string, unknown> | undefined;

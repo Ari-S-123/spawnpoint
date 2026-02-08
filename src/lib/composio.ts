@@ -23,7 +23,9 @@ export async function initiateConnection(
     appName: app
   });
 
-  console.log(`[composio] initiateConnection: connectedAccountId=${connectionRequest.connectedAccountId}, status=${connectionRequest.connectionStatus}, redirectUrl=${connectionRequest.redirectUrl}`);
+  console.log(
+    `[composio] initiateConnection: connectedAccountId=${connectionRequest.connectedAccountId}, status=${connectionRequest.connectionStatus}, redirectUrl=${connectionRequest.redirectUrl}`
+  );
 
   const rows = await db
     .insert(integrations)
@@ -38,8 +40,8 @@ export async function initiateConnection(
   const row = rows[0]!;
 
   // Poll in the background for completion using SDK's waitUntilActive + manual fallback
-  waitForConnection(row.id, connectionRequest).catch(
-    (err) => console.error(`[composio] waitForConnection failed for ${row.id}:`, err)
+  waitForConnection(row.id, connectionRequest).catch((err) =>
+    console.error(`[composio] waitForConnection failed for ${row.id}:`, err)
   );
 
   return {
@@ -124,9 +126,7 @@ export async function getAgentIntegrations(agentId: string) {
     for (const row of needsReconcile) {
       // Match by connectedAccountId or by app name
       const match = connections.find(
-        (c) =>
-          (row.connectedAccountId && c.id === row.connectedAccountId) ||
-          c.appName?.toLowerCase() === row.app
+        (c) => (row.connectedAccountId && c.id === row.connectedAccountId) || c.appName?.toLowerCase() === row.app
       );
 
       if (!match) continue;
@@ -217,11 +217,7 @@ export async function getComposioTools(agentId: string, apps?: string[]) {
   });
 }
 
-export async function executeComposioTool(
-  agentId: string,
-  actionName: string,
-  args: Record<string, unknown>
-) {
+export async function executeComposioTool(agentId: string, actionName: string, args: Record<string, unknown>) {
   const entity = getClient().getEntity(agentId);
 
   // Filter out empty strings, null, and undefined so Composio uses defaults
@@ -280,4 +276,27 @@ export async function executeComposioTool(
   });
 
   return result;
+}
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export async function createInstagramPost(
+  _imageUrl: string,
+  _caption: string
+): Promise<{ success: boolean; result?: unknown; error?: string }> {
+  return { success: false, error: 'Not implemented' };
+}
+
+export async function publishFirstPost(
+  _agentName: string
+): Promise<{ success: boolean; result?: unknown; error?: string }> {
+  return { success: false, error: 'Not implemented' };
+}
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
+export async function generateFirstPostCaption(agentName: string): Promise<string> {
+  return `First post by ${agentName}`;
+}
+
+export function getFirstPostImageUrl(agentName: string): string {
+  return `https://picsum.photos/seed/${agentName}/1080/1080`;
 }

@@ -20,45 +20,47 @@ from Crypto.Random import get_random_bytes
 from nacl.public import PublicKey, SealedBox
 
 # ---------------------------------------------------------------------------
+
 # Constants
+
 # ---------------------------------------------------------------------------
 
 IG_APP_ID = "936619743392459"
 
 USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/120.0.0.0 Safari/537.36"
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+"AppleWebKit/537.36 (KHTML, like Gecko) "
+"Chrome/120.0.0.0 Safari/537.36"
 )
 
 SIGNUP_URL = "https://www.instagram.com/accounts/emailsignup/"
 GRAPHQL_URL = "https://www.instagram.com/api/graphql"
 
 # GraphQL doc_ids
+
 DOC_ID_FIELD_VALIDATION = "25391252800555418"
 DOC_ID_FORM_SUBMIT = "25782408224726258"
 DOC_ID_CONFIRMATION = "24050931851170558"
 
-
 # ---------------------------------------------------------------------------
+
 # Helpers
+
 # ---------------------------------------------------------------------------
 
-def _compute_jazoest(phone_id: str) -> str:
-    """Compute jazoest checksum from a token string (usually mid cookie)."""
-    total = sum(ord(c) for c in phone_id)
-    return f"2{total}"
+def \_compute_jazoest(phone_id: str) -> str:
+"""Compute jazoest checksum from a token string (usually mid cookie)."""
+total = sum(ord(c) for c in phone_id)
+return f"2{total}"
 
+def \_extract_from_html(html: str, pattern: str) -> str | None:
+"""Extract a value from HTML using a regex pattern."""
+m = re.search(pattern, html)
+return m.group(1) if m else None
 
-def _extract_from_html(html: str, pattern: str) -> str | None:
-    """Extract a value from HTML using a regex pattern."""
-    m = re.search(pattern, html)
-    return m.group(1) if m else None
-
-
-def _extract_encryption_config(html: str) -> tuple[str | None, int | None]:
-    """
-    Extract the password encryption public key and key_id from the page HTML.
+def \_extract_encryption_config(html: str) -> tuple[str | None, int | None]:
+"""
+Extract the password encryption public key and key_id from the page HTML.
 
     Instagram embeds these in the page JS as part of the shared data or
     in script tags. The public key is a 32-byte X25519 key (hex-encoded)
@@ -95,10 +97,9 @@ def _extract_encryption_config(html: str) -> tuple[str | None, int | None]:
 
     return pub_key, key_id
 
-
 def encrypt_password(password: str, pub_key_hex: str, key_id: int) -> str:
-    """
-    Encrypt a password using Instagram's #PWD_BROWSER:10 scheme.
+"""
+Encrypt a password using Instagram's #PWD_BROWSER:10 scheme.
 
     The server's public key is a 32-byte X25519 key. The scheme:
     1. Generate a random 32-byte AES-256 session key
@@ -140,13 +141,14 @@ def encrypt_password(password: str, pub_key_hex: str, key_id: int) -> str:
     b64 = base64.b64encode(payload).decode()
     return f"#PWD_BROWSER:10:{ts}:{b64}"
 
-
 # ---------------------------------------------------------------------------
+
 # Session setup
+
 # ---------------------------------------------------------------------------
 
 class InstagramRegistration:
-    """Manages the full Instagram registration flow."""
+"""Manages the full Instagram registration flow."""
 
     def __init__(self):
         self.session = requests.Session()
@@ -616,16 +618,17 @@ class InstagramRegistration:
 
         return result
 
-
 # ---------------------------------------------------------------------------
+
 # Main
+
 # ---------------------------------------------------------------------------
 
 def main():
-    print("=" * 60)
-    print("  Instagram Account Registration (Pure Python)")
-    print("=" * 60)
-    print()
+print("=" _ 60)
+print(" Instagram Account Registration (Pure Python)")
+print("=" _ 60)
+print()
 
     # Step 0: Collect user input
     print("[0] Enter registration details:")
@@ -685,6 +688,5 @@ def main():
     print()
     print("Done.")
 
-
-if __name__ == "__main__":
-    main()
+if **name** == "**main**":
+main()

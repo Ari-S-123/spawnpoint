@@ -151,7 +151,7 @@ async function executePlatformSignup(
     if (verification.type === 'otp') {
       await injectOTP(session.page, verification.value);
     } else if (verification.type === 'link') {
-      await session.page.goto(verification.value, { timeout: 15_000 });
+      await session.page.goto(verification.value, { timeout: 120_000 });
     }
 
     await session.page.waitForTimeout(3000);

@@ -14,8 +14,6 @@ import { LiveViewPanel } from '@/components/agents/live-view-panel';
 import { TaskStreamProvider } from '@/components/agents/task-stream-provider';
 import { Bot, Shield, Activity, Monitor } from 'lucide-react';
 
-const tabTriggerClass = 'data-[state=active]:text-amber-300';
-
 export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = await getCachedSession();
   if (!session?.user) {
@@ -67,20 +65,20 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
 
         <TaskStreamProvider agentId={agent.id}>
           <Tabs defaultValue="overview">
-            <TabsList className="mb-6">
-              <TabsTrigger value="overview" className={`gap-1.5 ${tabTriggerClass}`}>
+            <TabsList variant="line" className="mb-6">
+              <TabsTrigger value="overview" className="gap-1.5">
                 <Activity className="h-3.5 w-3.5" />
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="live" className={`gap-1.5 ${tabTriggerClass}`}>
+              <TabsTrigger value="live" className="gap-1.5">
                 <Monitor className="h-3.5 w-3.5" />
                 Live View
               </TabsTrigger>
-              <TabsTrigger value="vault" className={`gap-1.5 ${tabTriggerClass}`}>
+              <TabsTrigger value="vault" className="gap-1.5">
                 <Shield className="h-3.5 w-3.5" />
                 Credentials
               </TabsTrigger>
-              <TabsTrigger value="activity" className={`gap-1.5 ${tabTriggerClass}`}>
+              <TabsTrigger value="activity" className="gap-1.5">
                 <Bot className="h-3.5 w-3.5" />
                 Activity
               </TabsTrigger>

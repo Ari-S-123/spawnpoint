@@ -22,6 +22,7 @@ export type TaskStatusEvent = {
   message: string;
   browserSessionId?: string;
   screenshot?: string;
+  liveViewUrl?: string;
   timestamp: string;
 };
 

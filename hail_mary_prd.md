@@ -42,10 +42,10 @@ Architecture (Minimal)
 Two tool backends, one interface
 
 Agent
- ├─ Existing Tool Server (internal tools)
- └─ Composio Tool Adapter
-      ├─ Auth (OAuth via Composio)
-      └─ Action Execution (Composio APIs)
+├─ Existing Tool Server (internal tools)
+└─ Composio Tool Adapter
+├─ Auth (OAuth via Composio)
+└─ Action Execution (Composio APIs)
 
 Key Principle
 
@@ -67,11 +67,11 @@ Normalize responses into shared ToolResult schema
 
 API / Interface (Sketch)
 Tool {
-  id: string
-  provider: "internal" | "composio"
-  app?: string
-  action: string
-  params: Record<string, any>
+id: string
+provider: "internal" | "composio"
+app?: string
+action: string
+params: Record<string, any>
 }
 
 Auth Flow (Fast Path)
@@ -113,4 +113,4 @@ Write the tool router + adapter code, or
 
 Design a 1-minute demo flow that hits YC judges immediately.
 
-Oauth should be one click oauth thorugh platform. And then use tool platform and others as necesarry to do the following task. 
+Oauth should be one click oauth thorugh platform. And then use tool platform and others as necesarry to do the following task.

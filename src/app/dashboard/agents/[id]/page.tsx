@@ -3,15 +3,16 @@ import { db } from '@/db';
 import { agents, setupTasks } from '@/db/schema';
 import { getCachedSession } from '@/lib/auth/session';
 import { and, eq } from 'drizzle-orm';
-import { formatDistanceToNow } from 'date-fns';
 import { Header } from '@/components/layout/header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { AgentStatusGrid } from '@/components/agents/agent-status-grid';
 import { CredentialsTable } from '@/components/vault/credentials-table';
 import { InboxViewer } from '@/components/inbox/inbox-viewer';
 import { TaskActivityLog } from '@/components/agents/task-activity-log';
 import { ActionsPanel } from '@/components/agents/actions-panel';
 import { IntegrationsPanel } from '@/components/agents/integrations-panel';
+import { LiveViewPanel } from '@/components/agents/live-view-panel';
 
 export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = await getCachedSession();
@@ -35,6 +36,8 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
   if (!agent) {
     notFound();
   }
+
+  const completedCount = tasks.filter((t) => t.status === 'completed').length;
 
   const serializedTasks = tasks.map((t) => ({
     id: t.id,
@@ -64,6 +67,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
         <Tabs defaultValue="status">
           <TabsList>
             <TabsTrigger value="status">Status</TabsTrigger>
+            <TabsTrigger value="live">Live View</TabsTrigger>
             <TabsTrigger value="inbox">Inbox</TabsTrigger>
             <TabsTrigger value="vault">Credentials</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -71,23 +75,26 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ id
             <TabsTrigger value="actions">Actions</TabsTrigger>
           </TabsList>
 
-                {/* Compact connection status */}
-                <div>
-                  <AgentStatusGrid initialTasks={serializedTasks} />
-                </div>
-              </div>
-            </TabsContent>
+          <TabsContent value="status" className="mt-6">
+            <div>
+              <AgentStatusGrid initialTasks={serializedTasks} />
+            </div>
+          </TabsContent>
 
-            <TabsContent value="live" className="mt-0">
-              <LiveViewPanel />
-            </TabsContent>
+          <TabsContent value="live" className="mt-0">
+            <LiveViewPanel />
+          </TabsContent>
 
-            <TabsContent value="vault" className="mt-0">
-              <CredentialsTable agentId={agent.id} />
-            </TabsContent>
+          <TabsContent value="inbox" className="mt-6">
+            <InboxViewer inboxId={agent.inboxId} />
+          </TabsContent>
+
+          <TabsContent value="vault" className="mt-0">
+            <CredentialsTable agentId={agent.id} />
+          </TabsContent>
 
           <TabsContent value="activity" className="mt-6">
-            <TaskActivityLog agentId={agent.id} />
+            <TaskActivityLog />
           </TabsContent>
 
           <TabsContent value="integrations" className="mt-6">

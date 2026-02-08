@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, Camera, ChevronDown, ChevronRight } from 'lucide-react';
+import {
+  ExternalLink,
+  Camera,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  Loader2,
+  AlertTriangle,
+  Check,
+  XCircle
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -38,6 +48,7 @@ type Props = {
 export function PlatformStatusCard({ platform, status, message, browserSessionId, screenshot }: Props) {
   const display = PLATFORM_DISPLAY[platform];
   const statusConfig = STATUS_CONFIG[status];
+  const StatusIcon = statusConfig.icon;
   const [showScreenshot, setShowScreenshot] = useState(false);
 
   const showBrowserLink = browserSessionId && (ACTIVE_STATUSES.has(status) || status === 'failed');
@@ -46,8 +57,6 @@ export function PlatformStatusCard({ platform, status, message, browserSessionId
     <Card
       className={cn(
         'relative overflow-hidden border-zinc-800/50 bg-gradient-to-br transition-all duration-500 hover:-translate-y-0.5',
-        display.gradient,
-        display.hoverBorder,
         status === 'completed' && 'border-amber-500/30',
         status === 'failed' && 'border-red-500/20',
         status === 'needs_human' && 'border-amber-500/20'
@@ -97,6 +106,7 @@ export function PlatformStatusCard({ platform, status, message, browserSessionId
                 Screenshot
               </button>
               {showScreenshot && (
+                /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={`data:image/png;base64,${screenshot}`}
                   alt={`${display.name} page screenshot`}

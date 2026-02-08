@@ -32,7 +32,7 @@ export function AppSidebar() {
     if (item.href === '/dashboard') {
       return pathname === '/dashboard' || pathname.startsWith('/dashboard/agents');
     }
-    return pathname.startsWith(item.matchPrefix);
+    return pathname.startsWith(item.href);
   }
 
   return (

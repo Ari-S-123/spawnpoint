@@ -169,12 +169,8 @@
           "name": "credentials_agent_id_agents_id_fk",
           "tableFrom": "credentials",
           "tableTo": "agents",
-          "columnsFrom": [
-            "agent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -250,12 +246,8 @@
           "name": "integrations_agent_id_agents_id_fk",
           "tableFrom": "integrations",
           "tableTo": "agents",
-          "columnsFrom": [
-            "agent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -336,12 +328,8 @@
           "name": "setup_tasks_agent_id_agents_id_fk",
           "tableFrom": "setup_tasks",
           "tableTo": "agents",
-          "columnsFrom": [
-            "agent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -357,49 +345,22 @@
     "public.composio_app": {
       "name": "composio_app",
       "schema": "public",
-      "values": [
-        "gmail",
-        "instagram",
-        "tiktok",
-        "twitter",
-        "sentry",
-        "vercel",
-        "mintlify",
-        "github"
-      ]
+      "values": ["gmail", "instagram", "tiktok", "twitter", "sentry", "vercel", "mintlify", "github"]
     },
     "public.integration_status": {
       "name": "integration_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "connected",
-        "failed"
-      ]
+      "values": ["pending", "connected", "failed"]
     },
     "public.platform": {
       "name": "platform",
       "schema": "public",
-      "values": [
-        "instagram",
-        "tiktok",
-        "twitter",
-        "mintlify",
-        "vercel",
-        "sentry"
-      ]
+      "values": ["instagram", "tiktok", "twitter", "mintlify", "vercel", "sentry"]
     },
     "public.task_status": {
       "name": "task_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "in_progress",
-        "awaiting_verification",
-        "needs_human",
-        "completed",
-        "failed"
-      ]
+      "values": ["pending", "in_progress", "awaiting_verification", "needs_human", "completed", "failed"]
     }
   },
   "schemas": {},
